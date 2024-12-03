@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import { ProductServices } from './product.services';
 
+// Create product
 const createProduct = catchAsync(async (req, res) => {
   const file = req.file;
     const result = await ProductServices.createProduct(req.body, file);
@@ -15,11 +16,13 @@ const createProduct = catchAsync(async (req, res) => {
   });
 });
 
+// Get all product with filteration
 const getAllProducts = catchAsync(async (req, res) => {
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 10;
+  const search = req.query.search as string;
 
-  const result = await ProductServices.getAllProducts(page, limit);
+  const result = await ProductServices.getAllProducts(page, limit, search);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -37,7 +40,7 @@ const getAllProducts = catchAsync(async (req, res) => {
   });
 });
 
-
+// Get single product by id
 const getSingleProductById = catchAsync(async (req, res) => {
   const { productId } = req.params;
   const result = await ProductServices.getSingleProductById(productId);
@@ -46,6 +49,20 @@ const getSingleProductById = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Product fetched successfully.',
+    data: result,
+  });
+});
+
+
+const updateProduct = catchAsync(async (req, res) => {
+  const file = req.file;
+  const {productId} = req.params;
+  const result = await ProductServices.updateProduct(productId, req.body, file);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Product updated successfully",
     data: result,
   });
 });
@@ -81,6 +98,6 @@ export const ProductControllers = {
   createProduct,
   getAllProducts,
   getSingleProductById,
-  // updatePost,
+  updateProduct,
   // deletePost,
 };

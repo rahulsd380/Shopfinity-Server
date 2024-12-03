@@ -19,15 +19,15 @@ router.post(
 
 router.get("/", ProductControllers.getAllProducts);
 router.get("/:productId", ProductControllers.getSingleProductById);
-// router.put(
-//   "/edit-post/:postId",
-//   multerUpload.array("files", 10),
-//   (req: Request, res: Response, next: NextFunction) => {
-//     req.body = JSON.parse(req.body.data);
-//     next();
-//   },
-//   PostControllers.updatePost
-// );
+router.put(
+  "/update-product/:productId",
+  multerUpload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
+  ProductControllers.updateProduct
+);
 // router.put("/edit-comment/:commentId", PostControllers.editComment);
 // router.delete("/delete-post/:postId", PostControllers.deletePost);
 // router.get("/:postId", PostControllers.getSinglePostById);
