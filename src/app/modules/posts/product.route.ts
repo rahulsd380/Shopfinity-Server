@@ -17,7 +17,8 @@ router.post(
   ProductControllers.createProduct
 );
 
-// router.get("/", ProductControllers.getAllPosts);
+router.get("/", ProductControllers.getAllProducts);
+router.get("/:productId", ProductControllers.getSingleProductById);
 // router.put(
 //   "/edit-post/:postId",
 //   multerUpload.array("files", 10),

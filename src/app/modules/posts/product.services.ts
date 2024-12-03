@@ -11,16 +11,13 @@ const createProduct = async (payload: TProduct, file: any) => {
     const imageName = name;
     const path = file.path;
 
-    // Upload the image to Cloudinary
+    // upload the image to Cloudinary
     const { secure_url } = await sendImageToCloudinary(imageName, path);
 
-    // Assign the uploaded image URL to the `image` field
-    payload.image = secure_url ;
+    payload.image = secure_url;
   } else {
     throw new Error("Image file is required.");
   }
-
-  // Prepare the product data
   const payloadData = {
     name,
     description,
@@ -38,20 +35,31 @@ const createProduct = async (payload: TProduct, file: any) => {
 };
 
 
-// const getAllPosts = async () => {
-//   const result = await Posts.find().populate('authorId')
-//   return result;
-// };
+const getAllProducts = async (page: number, limit: number) => {
+  const skip = (page - 1) * limit;
+  const [products, totalProducts] = await Promise.all([
+    Product.find().skip(skip).limit(limit),
+    Product.countDocuments(),
+  ]);
+
+  return {
+    products,
+    totalProducts,
+  };
+};
+
+const getSingleProductById = async (productId: string) => {
+  const result = await Product.findById(productId);
+  return result;
+};
+
 
 // const getMostUpvotedPost = async () => {
 //   const result = await Posts.find().sort({ "upvotes.length": -1 });
 //   return result;
 // };
 
-// const getSinglePostById = async (postId: string) => {
-//   const result = await Posts.findById(postId);
-//   return result;
-// };
+
 
 // const updatePost = async (postId: string, payload: Partial<TPost>, files: any[]) => {
 //   const imageUrls: string[] = [];
@@ -155,7 +163,7 @@ const createProduct = async (payload: TProduct, file: any) => {
 //   };
 
 //   post.comments.push(newComment);
-  
+
 //   await post.save();
 
 //   return post;
@@ -164,7 +172,7 @@ const createProduct = async (payload: TProduct, file: any) => {
 // const editComment = async (commentId: string, payload: Partial<Omit<TComment, 'postId'> & { postId: string }>) => {
 //   // Step 1: Fetch the post containing the comment
 //   const post = await Posts.findById(payload.postId);
-  
+
 //   // Step 2: Check if post exists
 //   if (!post) {
 //     throw new AppError(httpStatus.NOT_FOUND, 'Post not found');
@@ -180,11 +188,11 @@ const createProduct = async (payload: TProduct, file: any) => {
 
 //   // Step 5: Update the comment's fields based on the provided payload
 //   const commentToUpdate = post.comments[commentIndex];
-  
+
 //   if (payload.comment !== undefined) {
 //     commentToUpdate.comment = payload.comment; // Update the comment text if provided
 //   }
-  
+
 //   if (payload.likes !== undefined) {
 //     commentToUpdate.likes = payload.likes; // Update the likes count if provided
 //   }
@@ -218,8 +226,8 @@ const createProduct = async (payload: TProduct, file: any) => {
 
 export const ProductServices = {
   createProduct,
-  // getAllPosts,
-  // getSinglePostById,
+  getAllProducts,
+  getSingleProductById,
   // updatePost,
   // deletePost,
   // upvotePost,

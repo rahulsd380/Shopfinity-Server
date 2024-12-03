@@ -15,37 +15,40 @@ const createProduct = catchAsync(async (req, res) => {
   });
 });
 
-// const getAllPosts = catchAsync(async (req, res) => {
-//   const result = await PostServices.getAllPosts();
+const getAllProducts = catchAsync(async (req, res) => {
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 10;
 
-//   if (result.length === 0 || result.length === undefined) {
-//     sendResponse(res, {
-//       statusCode: httpStatus.OK,
-//       success: false,
-//       message: 'No posts found.',
-//       data: result,
-//     });
-//   }
+  const result = await ProductServices.getAllProducts(page, limit);
 
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Posts retrieved successfully',
-//     data: result,
-//   });
-// });
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Products fetched successfully",
+    data: {
+      metadata: {
+        totalProducts: result.totalProducts,
+        productsPerPage: limit,
+        currentPage: page,
+        totalPages: Math.ceil(result.totalProducts / limit),
+      },
+      products: result.products,
+    },
+  });
+});
 
-// const getSinglePostById = catchAsync(async (req, res) => {
-//   const { postId } = req.params;
-//   const result = await PostServices.getSinglePostById(postId);
 
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Post fetched successfully.',
-//     data: result,
-//   });
-// });
+const getSingleProductById = catchAsync(async (req, res) => {
+  const { productId } = req.params;
+  const result = await ProductServices.getSingleProductById(productId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Product fetched successfully.',
+    data: result,
+  });
+});
 
 // const updatePost = catchAsync(async (req, res) => {
 //   const files = Array.isArray(req.files) ? req.files : [];
@@ -76,8 +79,8 @@ const createProduct = catchAsync(async (req, res) => {
 
 export const ProductControllers = {
   createProduct,
-  // getAllPosts,
-  // getSinglePostById,
+  getAllProducts,
+  getSingleProductById,
   // updatePost,
   // deletePost,
 };
