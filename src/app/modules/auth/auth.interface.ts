@@ -28,7 +28,7 @@ export interface TUser {
   socialMediaLinks?: SocialMediaLink[];
   followers: Array<string>;
   following: Array<string>
-  role: "admin" | "user";
+  role: "admin" | "vendor" | "user";
   isVerified: boolean;
 }
 
