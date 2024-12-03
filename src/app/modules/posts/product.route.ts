@@ -28,13 +28,6 @@ router.put(
   },
   ProductControllers.updateProduct
 );
-// router.put("/edit-comment/:commentId", PostControllers.editComment);
-// router.delete("/delete-post/:postId", PostControllers.deletePost);
-// router.get("/:postId", PostControllers.getSinglePostById);
-// router.post("/:postId/upvote", PostControllers.upvotePost);
-// router.post("/:postId/downvote", PostControllers.downvotePost);
-// router.post("/:postId/comment", PostControllers.addComment);
-// router.get("/most-upvoted", PostControllers.getMostUpvotedPost);
-// router.delete("/:postId/comment/:commentId", PostControllers.deleteComment);
+router.delete("/delete-product/:productId", ProductControllers.deleteProduct);
 
 export const ProductRoutes = router;

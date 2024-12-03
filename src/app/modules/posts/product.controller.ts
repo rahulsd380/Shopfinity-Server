@@ -6,7 +6,7 @@ import { ProductServices } from './product.services';
 // Create product
 const createProduct = catchAsync(async (req, res) => {
   const file = req.file;
-    const result = await ProductServices.createProduct(req.body, file);
+  const result = await ProductServices.createProduct(req.body, file);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -53,10 +53,10 @@ const getSingleProductById = catchAsync(async (req, res) => {
   });
 });
 
-
+// Update product
 const updateProduct = catchAsync(async (req, res) => {
   const file = req.file;
-  const {productId} = req.params;
+  const { productId } = req.params;
   const result = await ProductServices.updateProduct(productId, req.body, file);
 
   sendResponse(res, {
@@ -67,31 +67,18 @@ const updateProduct = catchAsync(async (req, res) => {
   });
 });
 
-// const updatePost = catchAsync(async (req, res) => {
-//   const files = Array.isArray(req.files) ? req.files : [];
-//   console.log(files);
-//   const { postId } = req.params;
-//   const result = await PostServices.updatePost(postId, req.body, files);
+// Delete product by id
+const deleteProduct = catchAsync(async (req, res) => {
+  const { productId } = req.params;
+  const result = await ProductServices.deleteProduct(productId);
 
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Post updated successfully',
-//     data: result,
-//   });
-// });
-
-// const deletePost = catchAsync(async (req, res) => {
-//   const { postId } = req.params;
-//   const result = await PostServices.deletePost(postId);
-
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Post deleted successfully',
-//     data: result,
-//   });
-// });
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Product deleted successfully',
+    data: result,
+  });
+});
 
 
 export const ProductControllers = {
@@ -99,5 +86,5 @@ export const ProductControllers = {
   getAllProducts,
   getSingleProductById,
   updateProduct,
-  // deletePost,
+  deleteProduct,
 };
