@@ -1,46 +1,62 @@
-import { Schema, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 import bcrypt from "bcrypt";
 import config from "../../config";
 import { TUser, UserModel } from "./auth.interface";
 
-const socialMediaLinkSchema = new Schema({
-  platform: { type: String },
-  url: { type: String },
-});
-
-const userSchema = new Schema<TUser, UserModel>(
+const userSchema = new Schema<TUser>(
   {
     name: {
       type: String,
-      required: [true, "Name is required"],
+      required: true,
+      trim: true,
+      maxlength: 100,
     },
-    userName: { type: String, default: "" },
-    isVerified: { type: Boolean, default: false },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    dateOfBirth: { type: Date, default: null },
-    profilePicture: { type: String, default: "" },
-    phoneNumber: { type: String, default: "" },
-    gender: {
+    email: {
       type: String,
-      enum: ["male", "female", "other"],
-      default: "",
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
     },
-    bio: { type: String, default: "" },
-    location: { type: String, default: "" },
-    website: { type: String, default: "" },
-    occupation: { type: String, default: "" },
-    socialMediaLinks: {
-      type: [socialMediaLinkSchema],
-      default: [],
+    password: {
+      type: String,
+      required: true,
     },
-    followers: { type: [String], default: [] },
-  following: { type: [String], default: [] },
     role: {
       type: String,
-      enum: ["admin", "vendor", "user"],
+      enum: ["user", "admin", "vendor"],
       default: "user",
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    avatar: {
+      type: String,
+    },
+    address: {
+      street: String,
+      city: String,
+      state: String,
+      country: String,
+      zipCode: String,
+    },
+    contactNumber: {
+      type: String,
+      trim: true,
+    },
+    orders: [
+      {
+        type: Types.ObjectId,
+        ref: "Order",
+      },
+    ],
+    wishlist: [
+      {
+        type: Types.ObjectId,
+        ref: "Product",
+      },
+    ],
   },
   {
     timestamps: true,

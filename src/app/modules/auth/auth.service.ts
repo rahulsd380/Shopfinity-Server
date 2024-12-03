@@ -12,36 +12,34 @@ import bcrypt from 'bcrypt';
 
 // Create user route
 const createUser = async (file: any, payload: Partial<TUser>) => {
+  const { name, email, password, contactNumber, role, address, orders, wishlist } = payload;
 
- // checking if the file is there or not
+  // If a file is uploaded, upload to Cloudinary and get the image URL
   if (file && file.path) {
-    const imageName = `${payload?.name}-${payload?.email}`;
+    const imageName = `${name}-${email}`;
     const path = file.path;
-
-    // Upload the image to Cloudinary
     const { secure_url } = await sendImageToCloudinary(imageName, path);
-    payload.profilePicture = secure_url;
+    payload.avatar = secure_url; // Set avatar URL
   }
 
   const payloadData = {
-    name: payload?.name || "",
-    email: payload?.email || "",
-    password: payload?.password || "",
-    userName: payload?.userName || "Anonymous",
-    dateOfBirth: payload?.dateOfBirth || null,
-    profilePicture: payload?.profilePicture || "",
-    phoneNumber: payload?.phoneNumber || "",
-    gender: payload?.gender || "male",
-    bio: payload?.bio || "",
-    location: payload?.location || "",
-    website: payload?.website || "",
-    occupation: payload?.occupation || "",
-    socialMediaLinks: payload?.socialMediaLinks || [],
-    followers : payload?.followers || [],
-    following : payload?.following || [],
-    role: "user",
+    name,
+    email,
+    password,
+    avatar: payload?.avatar || "",
+    contactNumber: contactNumber || "",
+    role: role || "user",
+    address: address || {
+      street: "",
+      city: "",
+      state: "",
+      country: "",
+      zipCode: "",
+    },
+    isVerified: false,
+    orders: orders || [],
+    wishlist: wishlist || [],
   };
-
 
   // Checking if user already exists
   const isUserExists = await User.findOne({ email: payloadData.email });
@@ -53,6 +51,7 @@ const createUser = async (file: any, payload: Partial<TUser>) => {
   const result = await User.create(payloadData);
   return result;
 };
+
 
 
 // Login

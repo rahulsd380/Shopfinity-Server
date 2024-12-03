@@ -3,37 +3,29 @@ export type TLoginAuth = {
   password: string;
 };
 
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { UserRole } from "./auth.constannts";
 
-export interface SocialMediaLink {
-  platform: string;
-  url: string;
-}
-
-export interface TUser {
-  _id: string;
+export type TUser= {
   name: string;
-  userName: string;
   email: string;
   password: string;
-  dateOfBirth: Date;
-  profilePicture?: string;
-  phoneNumber: string;
-  gender?: "male" | "female" | "other";
-  bio?: string;
-  location?: string;
-  website?: string;
-  occupation?: string;
-  socialMediaLinks?: SocialMediaLink[];
-  followers: Array<string>;
-  following: Array<string>
-  role: "admin" | "vendor" | "user";
+  role: "user" | "admin" | "vendor";
   isVerified: boolean;
+  avatar?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  address?: {
+    street: string;
+    city: string;
+    state: string;
+    country: string;
+    zipCode: string;
+  };
+  contactNumber?: string;
+  orders?: Types.ObjectId[];
+  wishlist?: Types.ObjectId[];
 }
-
-
-
 
 export interface UserModel extends Model<TUser> {
   isUserExists(email: string): Promise<TUser>;
