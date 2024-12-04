@@ -184,7 +184,6 @@ const forgetPassword = async (email: string) => {
   );
 
  const resetLink = `${config.reset_password_ui_url}/reset-password?email=${user?.email}&token=${resetToken}`;
- console.log(resetLink)
 
  await sendEmail(user?.email, resetLink);
 };
@@ -203,8 +202,6 @@ const resetPassword = async (payload:{email:string, newPassword:string}, token:s
     token,
     config.jwt_access_secret as string
   ) as JwtPayload;
-
-  console.log(decoded);
 
   if(payload?.email !== decoded?.email){
     throw new AppError(httpStatus.FORBIDDEN, "You are forbidden");
