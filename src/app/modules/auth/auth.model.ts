@@ -41,6 +41,8 @@ const userSchema = new Schema<TUser>(
       country: String,
       zipCode: String,
     },
+    isDeleted : {type:Boolean, default:false},
+    isSuspended : {type:Boolean, default:false},
     contactNumber: {
       type: String,
       trim: true,

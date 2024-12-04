@@ -10,16 +10,15 @@ import { User } from "./auth.model";
 import { sendEmail } from "../../utils/sendEmail";
 import bcrypt from 'bcrypt';
 
-// Create user route
+// Create user
 const createUser = async (file: any, payload: Partial<TUser>) => {
   const { name, email, password, contactNumber, role, address, orders, wishlist } = payload;
 
-  // If a file is uploaded, upload to Cloudinary and get the image URL
   if (file && file.path) {
     const imageName = `${name}-${email}`;
     const path = file.path;
     const { secure_url } = await sendImageToCloudinary(imageName, path);
-    payload.avatar = secure_url; // Set avatar URL
+    payload.avatar = secure_url;
   }
 
   const payloadData = {
@@ -36,6 +35,8 @@ const createUser = async (file: any, payload: Partial<TUser>) => {
       country: "",
       zipCode: "",
     },
+    isDeleted : false,
+    isSuspended : false,
     isVerified: false,
     orders: orders || [],
     wishlist: wishlist || [],
@@ -57,7 +58,6 @@ const createUser = async (file: any, payload: Partial<TUser>) => {
 // Login
 const loginUser = async (payload: TLoginAuth) => {
   // Check if the user exists or not
-
   const user = await User.isUserExists(payload.email);
 
   
@@ -66,11 +66,16 @@ const loginUser = async (payload: TLoginAuth) => {
   }
 
   // Check if the user already deleted or not
-  // const isUserDeleted = isUserexists?.isDeleted;
-  // console.log(isUserDeleted);
-  // if(isUserDeleted){
-  //     throw new AppError(httpStatus.NOT_FOUND, 'This user is deleted form DB!')
-  // }
+  const isUserDeleted = user?.isDeleted;
+  if(isUserDeleted){
+      throw new AppError(httpStatus.NOT_FOUND, 'User does not exists.')
+  }
+
+  // Check if the user suspended or not
+  const isUserSuspended = user?.isSuspended;
+  if(isUserSuspended){
+      throw new AppError(httpStatus.FORBIDDEN, 'You are suspended!')
+  }
 
   // Check if the password is correct or not
   if (!(await User.isPasswordMatched(payload?.password, user?.password))) {

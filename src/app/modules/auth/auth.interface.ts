@@ -7,6 +7,7 @@ import { Model, Types } from "mongoose";
 import { UserRole } from "./auth.constannts";
 
 export type TUser= {
+  _id:string;
   name: string;
   email: string;
   password: string;
@@ -22,6 +23,8 @@ export type TUser= {
     country: string;
     zipCode: string;
   };
+  isDeleted : boolean;
+  isSuspended : boolean;
   contactNumber?: string;
   orders?: Types.ObjectId[];
   wishlist?: Types.ObjectId[];
