@@ -68,14 +68,19 @@ const changeUserRoleToUser = async (userId: string) => {
   return user;
 };
 
+const suspendUser = async (userId: string) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  user.isSuspended = true;
+  await user.save();
+  return user;
+};
+
 const deleteUser = async (id: string) => {
   const result = await User.findByIdAndDelete(id);
-
-  // id,
-  // { isDeleted: true },
-  // {
-  //   new: true,
-  // }
   return result;
 };
 
@@ -125,6 +130,7 @@ export const UserServices = {
   deleteUser,
   changeUserRoleToAdmin,
   changeUserRoleToUser,
+  suspendUser,
   getMyPosts,
   getSingleUserById,
   followUser,

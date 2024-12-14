@@ -4,13 +4,14 @@ import { userRoutes } from "../modules/users/users.route";
 import { PaymentRoutes } from "../modules/payment/payment.route";
 import { ProductRoutes } from "../modules/product/product.route";
 import { CategoryRoutes } from "../modules/categories/category.route";
-import { VendorRoutes } from "../modules/vendor/vendor.routes";
+import { SellerRoutes } from "../modules/vendor/vendor.routes";
+import { CartRoutes } from "../modules/cart/cart.routes";
 
 const router = Router();
 
 const moduleRoutes = [
   {
-    path: "/users",
+    path: "/user",
     route: userRoutes,
   },
   {
@@ -30,8 +31,12 @@ const moduleRoutes = [
     route: CategoryRoutes,
   },
   {
-    path: "/vendor",
-    route: VendorRoutes,
+    path: "/seller",
+    route: SellerRoutes,
+  },
+  {
+    path: "/cart",
+    route: CartRoutes,
   },
 ];
 

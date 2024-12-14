@@ -8,8 +8,8 @@ const router = express.Router();
 
 router.post(
   "/create-product",
-  multerUpload.single('file'),
-  // auth(UserRole.vendor, UserRole.admin),
+  multerUpload.array('files', 10),
+  auth(UserRole.vendor, UserRole.admin),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
     next();
@@ -21,7 +21,7 @@ router.get("/", ProductControllers.getAllProducts);
 router.get("/:productId", ProductControllers.getSingleProductById);
 router.put(
   "/update-product/:productId",
-  multerUpload.single('file'),
+  multerUpload.array('files', 10),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
     next();

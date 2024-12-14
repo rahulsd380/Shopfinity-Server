@@ -23,9 +23,10 @@ router.put('/me', auth('user', 'admin'),
 UserControllers.updateProfile);
 
 
-router.delete('/delete-user/:userId', auth('admin'), UserControllers.deleteUser);
+router.delete('/remove-user/:userId', auth('admin'), UserControllers.deleteUser);
 router.put('/make-admin/:userId', auth('admin'),  UserControllers.changeUserRoleToAdmin);
 router.put('/make-user/:userId', auth('admin'),  UserControllers.changeUserRoleToUser);
+router.put('/suspend-user/:userId', auth('admin'),  UserControllers.suspendUser);
 
 router.put('/follow/:userId', auth('user', 'admin'), UserControllers.followUser);
 router.put('/unfollow/:userId', auth('user', 'admin'), UserControllers.unfollowUser);

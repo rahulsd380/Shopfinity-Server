@@ -1,5 +1,11 @@
+import { Types } from "mongoose";
+
 export type TVendor= {
+    userId : Types.ObjectId;
     shopName: string;
+    tagline: string;
+    supplierName: string;
+    sellerName: string;
     shopDescription?: string;
     shopLogo?: string;
     phoneNumber?: string;
@@ -13,6 +19,7 @@ export type TVendor= {
     products: string[];
     followers: string[];
     isVerified: boolean;
+    status: string;
     createdAt?: Date;
     updatedAt?: Date;
   }

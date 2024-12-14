@@ -5,8 +5,8 @@ import { ProductServices } from './product.services';
 
 // Create product
 const createProduct = catchAsync(async (req, res) => {
-  const file = req.file;
-  const result = await ProductServices.createProduct(req.body, file);
+  const files = Array.isArray(req.files) ? req.files : [];
+  const result = await ProductServices.createProduct(req.body, files);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -21,8 +21,9 @@ const getAllProducts = catchAsync(async (req, res) => {
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 10;
   const search = req.query.search as string;
+  const category = req.query.category as string;
 
-  const result = await ProductServices.getAllProducts(page, limit, search);
+  const result = await ProductServices.getAllProducts(page, limit, search, category);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -87,4 +88,5 @@ export const ProductControllers = {
   getSingleProductById,
   updateProduct,
   deleteProduct,
+
 };

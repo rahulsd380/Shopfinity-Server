@@ -5,19 +5,20 @@ import { VendorControllers } from "./vendor.controller";
 const router = express.Router();
 
 router.post(
-  "/create-vendor",
-  multerUpload.single("file"),
+  "/become-seller",
+  multerUpload.single('file'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
     next();
   },
-  VendorControllers.createVendor
+  VendorControllers.becomeSeller
 );
 
 router.get("/", VendorControllers.getAllVendors);
-router.get("/:vendorId", VendorControllers.getSingleVendorById);
+router.get("/:sellerId", VendorControllers.getSingleVendorById);
+router.get("/my-shop/:userId", VendorControllers.getMyShop);
 router.put(
-  "/update-vendor/:vendorId",
+  "/update-seller/:vendorId",
   multerUpload.single("file"),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
@@ -25,6 +26,10 @@ router.put(
   },
   VendorControllers.updateVendor
 );
-router.delete("/delete-vendor/:vendorId", VendorControllers.deleteVendor);
+router.delete("/remove-seller/:vendorId", VendorControllers.deleteVendor);
 
-export const VendorRoutes = router;
+router.put("/approve-seller/:sellerId", VendorControllers.approveSeller);
+router.put("/reject-request/:sellerId", VendorControllers.rejectRequest);
+router.put("/blacklist-seller/:sellerId", VendorControllers.blacklistSeller);
+
+export const SellerRoutes = router;

@@ -9,12 +9,12 @@ const router = express.Router();
 // Create category
 router.post(
   "/create-category",
+  auth("admin"),
   multerUpload.single('file'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
     next();
   },
-  auth(UserRole.admin),
   CategoryControllers.createCategory
 );
 

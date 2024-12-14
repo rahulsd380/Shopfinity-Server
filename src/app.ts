@@ -16,12 +16,12 @@ app.use(express.json());
 // app.use(express.static("./uploads"));
 
 // Middleware for handling CORS with credentials
-app.use(cors({ origin: ['https://tail-stories.vercel.app'], credentials: true }));
+app.use(cors({ origin: ['http://localhost:3000'], credentials: true }));
 // app.use(cors({ origin: ['http://localhost:3000'], credentials: true }));
 
 // Root route
 app.get('/', (req, res) => {
-  res.send("Welcome to Tail Stories");
+  res.send("Welcome to shopfinity");
 });
 
 // Application routes

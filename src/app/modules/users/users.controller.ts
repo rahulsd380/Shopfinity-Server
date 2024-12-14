@@ -75,6 +75,19 @@ const changeUserRoleToUser = catchAsync(async (req, res) => {
   });
 });
 
+const suspendUser = catchAsync(async (req, res) => {
+  const { userId } = req.params;
+  const result = await UserServices.suspendUser(userId);
+
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User suspended',
+    data: result,
+  });
+});
+
 const deleteUser = catchAsync(async (req, res) => {
   const { userId } = req.params;
   const result = await UserServices.deleteUser(userId);
@@ -136,6 +149,7 @@ export const UserControllers = {
   deleteUser,
   changeUserRoleToAdmin,
   changeUserRoleToUser,
+  suspendUser,
   getMyPosts,
   getSingleUserById,
   followUser,

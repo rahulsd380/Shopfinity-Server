@@ -7,7 +7,7 @@ export type TProduct = {
   category: string;
   brand: string;
   stock: number;
-  image: string;
+  images: string[];
   ratings?: number;
   reviews?: { userId: Types.ObjectId; reviewId: Types.ObjectId }[];
   vendorId : { vendorId: Types.ObjectId};

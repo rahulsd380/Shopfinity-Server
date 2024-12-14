@@ -4,14 +4,15 @@ import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import { VendorServices } from "./vendor.service";
 
-const createVendor = catchAsync(async (req: Request, res: Response) => {
+const becomeSeller = catchAsync(async (req, res) => {
   const file = req.file;
-  const result = await VendorServices.createVendor(req.body, file);
+  // console.log("from controller", file, req.body);
+  const result = await VendorServices.becomeSeller(file, req.body);
 
   sendResponse(res, {
-    statusCode: httpStatus.CREATED,
+    statusCode: httpStatus.OK,
     success: true,
-    message: "Vendor created successfully.",
+    message: "Registered as vendor successfully",
     data: result,
   });
 });
@@ -28,8 +29,20 @@ const getAllVendors = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getSingleVendorById = catchAsync(async (req: Request, res: Response) => {
-  const { vendorId } = req.params;
-  const result = await VendorServices.getSingleVendorById(vendorId);
+  const { sellerId } = req.params;
+  const result = await VendorServices.getSingleVendorById(sellerId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Vendor fetched successfully.",
+    data: result,
+  });
+});
+
+const getMyShop = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const result = await VendorServices.getMyShop(userId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -52,6 +65,42 @@ const updateVendor = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const approveSeller = catchAsync(async (req: Request, res: Response) => {
+  const { sellerId } = req.params;
+  const result = await VendorServices.approveSeller(sellerId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Seller request approved.",
+    data: result,
+  });
+});
+
+const rejectRequest = catchAsync(async (req: Request, res: Response) => {
+  const { sellerId } = req.params;
+  const result = await VendorServices.rejectRequest(sellerId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Seller request rejected.",
+    data: result,
+  });
+});
+
+const blacklistSeller = catchAsync(async (req: Request, res: Response) => {
+  const { sellerId } = req.params;
+  const result = await VendorServices.blacklistSeller(sellerId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Seller blacklisted",
+    data: result,
+  });
+});
+
 const deleteVendor = catchAsync(async (req: Request, res: Response) => {
   const { vendorId } = req.params;
   const result = await VendorServices.deleteVendor(vendorId);
@@ -65,9 +114,14 @@ const deleteVendor = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const VendorControllers = {
-  createVendor,
+  becomeSeller,
   getAllVendors,
   getSingleVendorById,
+  getMyShop,
   updateVendor,
   deleteVendor,
+
+  approveSeller,
+  rejectRequest,
+  blacklistSeller,
 };
