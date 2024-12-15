@@ -10,7 +10,7 @@ const product_controller_1 = require("./product.controller");
 const auth_1 = __importDefault(require("../../middlewares/auth"));
 const user_constant_1 = require("../users/user.constant");
 const router = express_1.default.Router();
-router.post("/create-product", multer_config_1.multerUpload.array('files', 10), (0, auth_1.default)(user_constant_1.UserRole.vendor, user_constant_1.UserRole.admin), (req, res, next) => {
+router.post("/create-product", multer_config_1.multerUpload.array('files', 10), (0, auth_1.default)(user_constant_1.UserRole.vendor, user_constant_1.UserRole.seller, user_constant_1.UserRole.admin), (req, res, next) => {
     req.body = JSON.parse(req.body.data);
     next();
 }, product_controller_1.ProductControllers.createProduct);

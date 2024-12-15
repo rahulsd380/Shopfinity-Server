@@ -11,7 +11,7 @@ export type TUser= {
   name: string;
   email: string;
   password: string;
-  role: "user" | "admin" | "vendor";
+  role: "user" | "admin" | "vendor" | "seller";
   isVerified: boolean;
   avatar?: string;
   createdAt: Date;

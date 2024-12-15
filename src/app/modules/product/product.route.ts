@@ -9,7 +9,7 @@ const router = express.Router();
 router.post(
   "/create-product",
   multerUpload.array('files', 10),
-  auth(UserRole.vendor, UserRole.admin),
+  auth(UserRole.vendor, UserRole.seller, UserRole.admin),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
     next();
