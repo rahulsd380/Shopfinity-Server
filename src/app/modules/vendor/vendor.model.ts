@@ -5,9 +5,10 @@ import { Schema } from "mongoose";
 const VendorSchema: Schema<TVendor> = new Schema(
   {
     userId: {
-        type: Types.ObjectId,
-        ref: "User",
-      },
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     shopName: {
       type: String,
       required: true,

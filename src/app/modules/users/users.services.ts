@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
-import { TUser } from '../auth/auth.interface';
 import { User } from '../auth/auth.model';
-import { Posts } from '../product/product.model';
 
 const getAllUser = async () => {
   const result = await User.find();
@@ -10,39 +7,33 @@ const getAllUser = async () => {
 };
 
 
-
-const getMyPosts = async (authorId: string) => {
-  const result = await Posts.find({authorId});
-  return result;
-};
-
 const getMe = async (userId: string) => {
   const result = await User.findById(userId);
   return result;
 };
 
-const updateProfile = async (id: string, payload: Partial<TUser>, profilePic: any) => {
-  let profilePicUrl: string | undefined;
+// const updateProfile = async (id: string, payload: Partial<TUser>, profilePic: any) => {
+//   let profilePicUrl: string | undefined;
 
-  if (profilePic) {
-    const imageName = `${id}-profile-${Date.now()}`;
-    const path = profilePic.path;
+//   if (profilePic) {
+//     const imageName = `${id}-profile-${Date.now()}`;
+//     const path = profilePic.path;
 
-    const { secure_url } = await sendImageToCloudinary(imageName, path);
-    profilePicUrl = secure_url;
-  }
+//     const { secure_url } = await sendImageToCloudinary(imageName, path);
+//     profilePicUrl = secure_url;
+//   }
 
-  if (profilePicUrl) {
-    payload.profilePicture = profilePicUrl;
-  }
+//   if (profilePicUrl) {
+//     payload.profilePicture = profilePicUrl;
+//   }
 
-  const result = await User.findByIdAndUpdate(id, payload, {
-    new: true,
-    runValidators: true,
-  });
+//   const result = await User.findByIdAndUpdate(id, payload, {
+//     new: true,
+//     runValidators: true,
+//   });
 
-  return result;
-};
+//   return result;
+// };
 
 
 
@@ -126,12 +117,10 @@ const unfollowUser = async (currentUserId: string, userId: string) => {
 export const UserServices = {
   getAllUser,
   getMe,
-  updateProfile,
   deleteUser,
   changeUserRoleToAdmin,
   changeUserRoleToUser,
   suspendUser,
-  getMyPosts,
   getSingleUserById,
   followUser,
   unfollowUser,

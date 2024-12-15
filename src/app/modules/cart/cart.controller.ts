@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import { CartServices } from "./cart.service";
+import catchAsync from "../../utils/catchAsync";
 
 // Add product to cart
-const addToCart = async (req: Request, res: Response) => {
-    try {
-      const { userId, quantity } = req.body;
+
+  const addToCart = catchAsync(async (req, res) => {
+    const { userId, quantity } = req.body;
       const { productId } = req.params;
       const result = await CartServices.addToCart(userId, productId, quantity);
   
@@ -16,15 +17,7 @@ const addToCart = async (req: Request, res: Response) => {
         message: "Product added to cart successfully",
         data: result,
       });
-    } catch (error) {
-      console.error(error); // Log error for debugging
-      sendResponse(res, {
-        statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-        success: false,
-        message: error.message || "Something went wrong",
-      });
-    }
-  };
+  });
   
 
 // Get all products in the cart

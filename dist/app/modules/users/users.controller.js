@@ -37,28 +37,6 @@ const getMe = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, 
         data: result,
     });
 }));
-const getMyPosts = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { authorId } = req.params;
-    const result = yield users_services_1.UserServices.getMyPosts(authorId);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: 'User profile retrieved successfully',
-        data: result,
-    });
-}));
-const updateProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const profilePic = req.file;
-    const userId = req.user.userId;
-    console.log(userId);
-    const result = yield users_services_1.UserServices.updateProfile(userId, req.body, profilePic);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: "Profile updated successfully",
-        data: result,
-    });
-}));
 const changeUserRoleToAdmin = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     const result = yield users_services_1.UserServices.changeUserRoleToAdmin(userId);
@@ -76,6 +54,16 @@ const changeUserRoleToUser = (0, catchAsync_1.default)((req, res) => __awaiter(v
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'User role updated to admin successfully',
+        data: result,
+    });
+}));
+const suspendUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    const result = yield users_services_1.UserServices.suspendUser(userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'User suspended',
         data: result,
     });
 }));
@@ -126,11 +114,10 @@ const unfollowUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
 exports.UserControllers = {
     getAllUser,
     getMe,
-    updateProfile,
     deleteUser,
     changeUserRoleToAdmin,
     changeUserRoleToUser,
-    getMyPosts,
+    suspendUser,
     getSingleUserById,
     followUser,
     unfollowUser,

@@ -11,38 +11,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserServices = void 0;
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const sendImageToCloudinary_1 = require("../../utils/sendImageToCloudinary");
 const auth_model_1 = require("../auth/auth.model");
-const posts_model_1 = require("../posts/posts.model");
 const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield auth_model_1.User.find();
-    return result;
-});
-const getMyPosts = (authorId) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield posts_model_1.Posts.find({ authorId });
     return result;
 });
 const getMe = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield auth_model_1.User.findById(userId);
     return result;
 });
-const updateProfile = (id, payload, profilePic) => __awaiter(void 0, void 0, void 0, function* () {
-    let profilePicUrl;
-    if (profilePic) {
-        const imageName = `${id}-profile-${Date.now()}`;
-        const path = profilePic.path;
-        const { secure_url } = yield (0, sendImageToCloudinary_1.sendImageToCloudinary)(imageName, path);
-        profilePicUrl = secure_url;
-    }
-    if (profilePicUrl) {
-        payload.profilePicture = profilePicUrl;
-    }
-    const result = yield auth_model_1.User.findByIdAndUpdate(id, payload, {
-        new: true,
-        runValidators: true,
-    });
-    return result;
-});
+// const updateProfile = async (id: string, payload: Partial<TUser>, profilePic: any) => {
+//   let profilePicUrl: string | undefined;
+//   if (profilePic) {
+//     const imageName = `${id}-profile-${Date.now()}`;
+//     const path = profilePic.path;
+//     const { secure_url } = await sendImageToCloudinary(imageName, path);
+//     profilePicUrl = secure_url;
+//   }
+//   if (profilePicUrl) {
+//     payload.profilePicture = profilePicUrl;
+//   }
+//   const result = await User.findByIdAndUpdate(id, payload, {
+//     new: true,
+//     runValidators: true,
+//   });
+//   return result;
+// };
 const changeUserRoleToAdmin = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield auth_model_1.User.findById(userId);
     if (!user) {
@@ -61,13 +55,17 @@ const changeUserRoleToUser = (userId) => __awaiter(void 0, void 0, void 0, funct
     yield user.save();
     return user;
 });
+const suspendUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield auth_model_1.User.findById(userId);
+    if (!user) {
+        throw new Error('User not found');
+    }
+    user.isSuspended = true;
+    yield user.save();
+    return user;
+});
 const deleteUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield auth_model_1.User.findByIdAndDelete(id);
-    // id,
-    // { isDeleted: true },
-    // {
-    //   new: true,
-    // }
     return result;
 });
 const getSingleUserById = (userId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -87,11 +85,10 @@ const unfollowUser = (currentUserId, userId) => __awaiter(void 0, void 0, void 0
 exports.UserServices = {
     getAllUser,
     getMe,
-    updateProfile,
     deleteUser,
     changeUserRoleToAdmin,
     changeUserRoleToUser,
-    getMyPosts,
+    suspendUser,
     getSingleUserById,
     followUser,
     unfollowUser,

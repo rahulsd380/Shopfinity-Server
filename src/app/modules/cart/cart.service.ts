@@ -61,10 +61,8 @@ const addToCart = async (userId: string, productId: string, quantity: number) =>
 
 // Get products in the cart
 const getCartProducts = async (userId: string) => {
-  const cart = await Cart.findOne({ userId });
-  if (!cart) throw new Error("Cart not found");
-
-  return cart.items;
+  const result = await Cart.findOne({ userId });
+  return result;
 };
 
 // Remove product from cart
@@ -85,12 +83,12 @@ const removeProductFromCart = async (userId: string, productId: string) => {
 // Update product quantity in the cart
 const updateQuantity = async (userId: string, productId: string, quantity: number) => {
   const cart = await Cart.findOne({ userId });
-  if (!cart) throw new Error("Cart not found");
+  if (!cart) throw new AppError(httpStatus.NOT_FOUND, "Cart not found");
 
   const item = cart.items.find(
     (item) => item.productId.toString() === productId
   );
-  if (!item) throw new Error("Product not found in cart");
+  if (!item) throw new AppError(httpStatus.NOT_FOUND, "Product not found in cart");
 
   // Update the quantity
   item.quantity = quantity;

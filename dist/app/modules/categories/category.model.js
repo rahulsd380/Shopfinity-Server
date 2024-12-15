@@ -23,59 +23,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Category = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const PaymentSchema = new mongoose_1.Schema({
-    name: {
-        type: String,
-        required: true,
-    },
-    email: {
-        type: String,
-        required: true,
-    },
-    phoneNumber: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    userId: {
-        type: String,
-        required: true,
-    },
-    amount: {
-        type: String,
-        required: true,
-    },
-    transactionId: {
-        type: String,
-        required: false,
-    },
-    address: {
-        type: String,
-        required: true,
-    },
-    streetAddress: {
-        type: String,
-        required: true,
-    },
-    country: {
-        type: String,
-        required: true,
-    },
-    state: {
-        type: String,
-        required: true,
-    },
-    zipCode: {
-        type: String,
-        required: true,
-    },
-    altPhoneNumber: {
-        type: String,
-        required: true,
-    },
+const CategorySchema = new mongoose_1.Schema({
+    name: { type: String, required: true, trim: true },
+    description: { type: String, trim: true },
+    image: { type: String, trim: true },
 }, {
-    timestamps: true,
+    timestamps: true
 });
-const Payment = mongoose_1.default.model("Payment", PaymentSchema);
-exports.default = Payment;
+exports.Category = mongoose_1.default.model("Category", CategorySchema);

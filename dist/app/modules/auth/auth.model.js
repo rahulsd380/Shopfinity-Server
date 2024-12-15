@@ -16,42 +16,61 @@ exports.User = void 0;
 const mongoose_1 = require("mongoose");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const config_1 = __importDefault(require("../../config"));
-const socialMediaLinkSchema = new mongoose_1.Schema({
-    platform: { type: String },
-    url: { type: String },
-});
 const userSchema = new mongoose_1.Schema({
     name: {
         type: String,
-        required: [true, "Name is required"],
+        required: true,
+        trim: true,
+        maxlength: 100,
     },
-    userName: { type: String, default: "" },
-    isVerified: { type: Boolean, default: false },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    dateOfBirth: { type: Date, default: null },
-    profilePicture: { type: String, default: "" },
-    phoneNumber: { type: String, default: "" },
-    gender: {
+    email: {
         type: String,
-        enum: ["male", "female", "other"],
-        default: "",
+        required: true,
+        unique: true,
+        trim: true,
+        lowercase: true,
     },
-    bio: { type: String, default: "" },
-    location: { type: String, default: "" },
-    website: { type: String, default: "" },
-    occupation: { type: String, default: "" },
-    socialMediaLinks: {
-        type: [socialMediaLinkSchema],
-        default: [],
+    password: {
+        type: String,
+        required: true,
     },
-    followers: { type: [String], default: [] },
-    following: { type: [String], default: [] },
     role: {
         type: String,
-        enum: ["admin", "user"],
+        enum: ["user", "admin", "vendor"],
         default: "user",
     },
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
+    avatar: {
+        type: String,
+    },
+    address: {
+        street: String,
+        city: String,
+        state: String,
+        country: String,
+        zipCode: String,
+    },
+    isDeleted: { type: Boolean, default: false },
+    isSuspended: { type: Boolean, default: false },
+    contactNumber: {
+        type: String,
+        trim: true,
+    },
+    orders: [
+        {
+            type: mongoose_1.Types.ObjectId,
+            ref: "Order",
+        },
+    ],
+    wishlist: [
+        {
+            type: mongoose_1.Types.ObjectId,
+            ref: "Product",
+        },
+    ],
 }, {
     timestamps: true,
 });

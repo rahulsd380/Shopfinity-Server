@@ -5,7 +5,6 @@ import { PaymentServices } from "./payment.service";
 
 const getAllPaymentHistories = catchAsync(async (req, res) => {
   const result = await PaymentServices.getAllPaymentHistories();
-
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -16,7 +15,6 @@ const getAllPaymentHistories = catchAsync(async (req, res) => {
 
 const payment = catchAsync(async (req, res) => {
   const result = await PaymentServices.payment(req.body);
-
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

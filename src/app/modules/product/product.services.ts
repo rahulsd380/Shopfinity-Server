@@ -41,7 +41,10 @@ const getAllProducts = async (
   page: number,
   limit: number,
   search?: string,
-  category?: string
+  category?: string,
+  brand?: string,
+  rating?: number,
+  priceRange?: string
 ) => {
   const skip = (page - 1) * limit;
 
@@ -56,15 +59,36 @@ const getAllProducts = async (
       }
     : {};
 
-  // Category filter (case-insensitive match)
+  // Category filter
   const categoryFilter = category
     ? { category: { $regex: category, $options: "i" } }
+    : {};
+
+  // Brand filter
+  const brandFilter = brand
+    ? { brand: { $regex: brand, $options: "i" } }
+    : {};
+
+  // Rating filter (greater than or equal to the specified rating)
+  const ratingFilter = rating ? { rating: { $gte: rating } } : {};
+
+  // Price range filter (e.g., "100-500")
+  const priceFilter = priceRange
+    ? {
+        price: {
+          $gte: Number(priceRange.split("-")[0]),
+          $lte: Number(priceRange.split("-")[1]),
+        },
+      }
     : {};
 
   // Combined filters
   const filters = {
     ...searchFilter,
     ...categoryFilter,
+    ...brandFilter,
+    ...ratingFilter,
+    ...priceFilter,
   };
 
   const [products, totalProducts] = await Promise.all([
@@ -77,6 +101,48 @@ const getAllProducts = async (
     totalProducts,
   };
 };
+
+// const getAllProducts = async (
+//   page: number,
+//   limit: number,
+//   search?: string,
+//   category?: string
+// ) => {
+//   const skip = (page - 1) * limit;
+
+//   // Search filter
+//   const searchFilter = search
+//     ? {
+//         $or: [
+//           { name: { $regex: search, $options: "i" } },
+//           { description: { $regex: search, $options: "i" } },
+//           { brand: { $regex: search, $options: "i" } },
+//         ],
+//       }
+//     : {};
+
+//   // Category filter (case-insensitive match)
+//   const categoryFilter = category
+//     ? { category: { $regex: category, $options: "i" } }
+//     : {};
+
+//   // Combined filters
+//   const filters = {
+//     ...searchFilter,
+//     ...categoryFilter,
+//   };
+
+//   const [products, totalProducts] = await Promise.all([
+//     Product.find(filters).skip(skip).limit(limit),
+//     Product.countDocuments(filters),
+//   ]);
+
+//   return {
+//     products,
+//     totalProducts,
+//   };
+// };
+
 
 
 // Get single product by id
@@ -98,7 +164,8 @@ const updateProduct = async (id: string, payload: Partial<TProduct>, productPic:
   }
 
   if (productPicUrl) {
-    payload.images = productPicUrl;
+    // Ensure payload.images is an array and append productPicUrl
+    payload.images = [...(payload.images || []), productPicUrl];
   }
 
   const result = await Product.findByIdAndUpdate(id, payload, {
@@ -108,6 +175,7 @@ const updateProduct = async (id: string, payload: Partial<TProduct>, productPic:
 
   return result;
 };
+
 
 // Delete product by id
 const deleteProduct = async (productId: string) => {

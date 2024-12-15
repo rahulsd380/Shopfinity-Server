@@ -1,26 +1,25 @@
 // users.route.ts
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import { UserControllers } from './users.controller';
 import auth from '../../middlewares/auth';
 // import { upload } from '../../utils/sendImageToCloudinary';
-import { multerUpload } from '../../config/multer.config';
 
 const router = express.Router();
 
 router.get('/', UserControllers.getAllUser);
 router.get('/me', auth('user', 'admin'), UserControllers.getMe);
 router.get('/:userId', UserControllers.getSingleUserById);
-router.get('/my-posts/:authorId', auth('user', 'admin'), UserControllers.getMyPosts);
+// router.get('/my-posts/:authorId', auth('user', 'admin'), UserControllers.getMyPosts);
 
-router.put('/me', auth('user', 'admin'),
-  multerUpload.single("file"),
-  (req: Request, res: Response, next: NextFunction) => {
-    if(req?.body?.data){
-      req.body = JSON.parse(req?.body?.data);
-    }
-    next();
-  },
-UserControllers.updateProfile);
+// router.put('/me', auth('user', 'admin'),
+//   multerUpload.single("file"),
+//   (req: Request, res: Response, next: NextFunction) => {
+//     if(req?.body?.data){
+//       req.body = JSON.parse(req?.body?.data);
+//     }
+//     next();
+//   },
+// UserControllers.updateProfile);
 
 
 router.delete('/remove-user/:userId', auth('admin'), UserControllers.deleteUser);

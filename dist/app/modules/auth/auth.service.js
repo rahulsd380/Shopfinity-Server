@@ -23,33 +23,34 @@ const sendImageToCloudinary_1 = require("../../utils/sendImageToCloudinary");
 const auth_model_1 = require("./auth.model");
 const sendEmail_1 = require("../../utils/sendEmail");
 const bcrypt_1 = __importDefault(require("bcrypt"));
-// Create user route
+// Create user
 const createUser = (file, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    // checking if the file is there or not
+    const { name, email, password, contactNumber, role, address, orders, wishlist } = payload;
     if (file && file.path) {
-        const imageName = `${payload === null || payload === void 0 ? void 0 : payload.name}-${payload === null || payload === void 0 ? void 0 : payload.email}`;
+        const imageName = `${name}-${email}`;
         const path = file.path;
-        // Upload the image to Cloudinary
         const { secure_url } = yield (0, sendImageToCloudinary_1.sendImageToCloudinary)(imageName, path);
-        payload.profilePicture = secure_url;
+        payload.avatar = secure_url;
     }
     const payloadData = {
-        name: (payload === null || payload === void 0 ? void 0 : payload.name) || "",
-        email: (payload === null || payload === void 0 ? void 0 : payload.email) || "",
-        password: (payload === null || payload === void 0 ? void 0 : payload.password) || "",
-        userName: (payload === null || payload === void 0 ? void 0 : payload.userName) || "Anonymous",
-        dateOfBirth: (payload === null || payload === void 0 ? void 0 : payload.dateOfBirth) || null,
-        profilePicture: (payload === null || payload === void 0 ? void 0 : payload.profilePicture) || "",
-        phoneNumber: (payload === null || payload === void 0 ? void 0 : payload.phoneNumber) || "",
-        gender: (payload === null || payload === void 0 ? void 0 : payload.gender) || "male",
-        bio: (payload === null || payload === void 0 ? void 0 : payload.bio) || "",
-        location: (payload === null || payload === void 0 ? void 0 : payload.location) || "",
-        website: (payload === null || payload === void 0 ? void 0 : payload.website) || "",
-        occupation: (payload === null || payload === void 0 ? void 0 : payload.occupation) || "",
-        socialMediaLinks: (payload === null || payload === void 0 ? void 0 : payload.socialMediaLinks) || [],
-        followers: (payload === null || payload === void 0 ? void 0 : payload.followers) || [],
-        following: (payload === null || payload === void 0 ? void 0 : payload.following) || [],
-        role: "user",
+        name,
+        email,
+        password,
+        avatar: (payload === null || payload === void 0 ? void 0 : payload.avatar) || "",
+        contactNumber: contactNumber || "",
+        role: role || "user",
+        address: address || {
+            street: "",
+            city: "",
+            state: "",
+            country: "",
+            zipCode: "",
+        },
+        isDeleted: false,
+        isSuspended: false,
+        isVerified: false,
+        orders: orders || [],
+        wishlist: wishlist || [],
     };
     // Checking if user already exists
     const isUserExists = yield auth_model_1.User.findOne({ email: payloadData.email });
@@ -68,11 +69,15 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, "User does not exists.");
     }
     // Check if the user already deleted or not
-    // const isUserDeleted = isUserexists?.isDeleted;
-    // console.log(isUserDeleted);
-    // if(isUserDeleted){
-    //     throw new AppError(httpStatus.NOT_FOUND, 'This user is deleted form DB!')
-    // }
+    const isUserDeleted = user === null || user === void 0 ? void 0 : user.isDeleted;
+    if (isUserDeleted) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'User does not exists.');
+    }
+    // Check if the user suspended or not
+    const isUserSuspended = user === null || user === void 0 ? void 0 : user.isSuspended;
+    if (isUserSuspended) {
+        throw new AppError_1.default(http_status_1.default.FORBIDDEN, 'You are suspended!');
+    }
     // Check if the password is correct or not
     if (!(yield auth_model_1.User.isPasswordMatched(payload === null || payload === void 0 ? void 0 : payload.password, user === null || user === void 0 ? void 0 : user.password))) {
         throw new AppError_1.default(http_status_1.default.FORBIDDEN, "Password is not correct.");
@@ -136,7 +141,6 @@ const forgetPassword = (email) => __awaiter(void 0, void 0, void 0, function* ()
     };
     const resetToken = (0, auth_utils_1.createToekn)(jwtpayload, config_1.default.jwt_access_secret, '10m');
     const resetLink = `${config_1.default.reset_password_ui_url}/reset-password?email=${user === null || user === void 0 ? void 0 : user.email}&token=${resetToken}`;
-    console.log(resetLink);
     yield (0, sendEmail_1.sendEmail)(user === null || user === void 0 ? void 0 : user.email, resetLink);
 });
 const resetPassword = (payload, token) => __awaiter(void 0, void 0, void 0, function* () {
@@ -148,7 +152,6 @@ const resetPassword = (payload, token) => __awaiter(void 0, void 0, void 0, func
     ;
     // Check if the token is valid or not.
     const decoded = jsonwebtoken_1.default.verify(token, config_1.default.jwt_access_secret);
-    console.log(decoded);
     if ((payload === null || payload === void 0 ? void 0 : payload.email) !== (decoded === null || decoded === void 0 ? void 0 : decoded.email)) {
         throw new AppError_1.default(http_status_1.default.FORBIDDEN, "You are forbidden");
     }

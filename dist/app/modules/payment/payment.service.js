@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaymentServices = void 0;
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const auth_model_1 = require("../auth/auth.model");
+const cart_model_1 = __importDefault(require("../cart/cart.model"));
 const payment_model_1 = __importDefault(require("./payment.model"));
 const payment_utils_1 = require("./payment.utils");
 // Get all payments
@@ -33,11 +34,20 @@ const payment = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         userId: payload.userId,
         amount: payload.amount,
         address: payload.address,
+        streetAddress: payload.streetAddress,
+        country: payload.country,
+        state: payload.state,
+        zipCode: payload.zipCode,
+        altPhoneNumber: payload.altPhoneNumber,
         transactionId,
     });
     yield payment.save();
-    // Update the isVerified field to true for the user
-    yield auth_model_1.User.findByIdAndUpdate(payload.userId, { isVerified: true });
+    // Push the productIds into the orders array in the User collection
+    yield auth_model_1.User.findByIdAndUpdate(payload.userId, {
+        $push: { orders: { $each: payload.productIds } },
+    }, { new: true });
+    // Empty the user's cart
+    yield cart_model_1.default.findOneAndUpdate({ userId: payload.userId }, { $set: { items: [] } }, { new: true });
     // Initiate the payment process
     const paymentData = {
         transactionId,
@@ -47,6 +57,11 @@ const payment = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         phoneNumber: payload.phoneNumber,
         userId: payload.userId,
         address: payload.address,
+        streetAddress: payload.streetAddress,
+        country: payload.country,
+        state: payload.state,
+        zipCode: payload.zipCode,
+        altPhoneNumber: payload.altPhoneNumber,
     };
     const paymentSession = yield (0, payment_utils_1.initiatePayment)(paymentData);
     return paymentSession;

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { User } from "../auth/auth.model";
+import Cart from "../cart/cart.model";
 import { TPayment } from "./payment.interface";
 import Payment from "./payment.model";
 import { initiatePayment, verifypayment } from "./payment.utils";
@@ -11,7 +12,7 @@ const getAllPaymentHistories = async () => {
 }
 
 // Make payment
-const payment = async (payload: TPayment) => {
+const payment = async (payload: TPayment & { productIds: string[] }) => {
   const transactionId = `TNX-${Date.now()}-${payload.email}`;
 
   // Create a new payment record
@@ -22,12 +23,30 @@ const payment = async (payload: TPayment) => {
     userId: payload.userId,
     amount: payload.amount,
     address: payload.address,
+    streetAddress: payload.streetAddress,
+    country: payload.country,
+    state: payload.state,
+    zipCode: payload.zipCode,
+    altPhoneNumber: payload.altPhoneNumber,
     transactionId,
   });
   await payment.save();
 
-  // Update the isVerified field to true for the user
-  await User.findByIdAndUpdate(payload.userId, { isVerified: true });
+  // Push the productIds into the orders array in the User collection
+  await User.findByIdAndUpdate(
+    payload.userId,
+    {
+      $push: { orders: { $each: payload.productIds } },
+    },
+    { new: true }
+  );
+
+  // Empty the user's cart
+  await Cart.findOneAndUpdate(
+    { userId: payload.userId },
+    { $set: { items: [] } },
+    { new: true }
+  );
 
   // Initiate the payment process
   const paymentData = {
@@ -38,11 +57,17 @@ const payment = async (payload: TPayment) => {
     phoneNumber: payload.phoneNumber,
     userId: payload.userId,
     address: payload.address,
+    streetAddress: payload.streetAddress,
+    country: payload.country,
+    state: payload.state,
+    zipCode: payload.zipCode,
+    altPhoneNumber: payload.altPhoneNumber,
   };
 
   const paymentSession = await initiatePayment(paymentData);
   return paymentSession;
 };
+
 
 // Payment confirmation message
 const paymentConfirmation = async (transactionId: string, status: string) => {

@@ -17,13 +17,16 @@ const createProduct = catchAsync(async (req, res) => {
 });
 
 // Get all product with filteration
-const getAllProducts = catchAsync(async (req, res) => {
+const getAllProducts = catchAsync(async (req, res) => { 
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 10;
   const search = req.query.search as string;
   const category = req.query.category as string;
+  const brand = req.query.brand as string;
+  const rating = parseFloat(req.query.rating as string);
+  const priceRange = req.query.priceRange as string;
 
-  const result = await ProductServices.getAllProducts(page, limit, search, category);
+  const result = await ProductServices.getAllProducts(page, limit, search, category, brand, rating, priceRange);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -40,6 +43,32 @@ const getAllProducts = catchAsync(async (req, res) => {
     },
   });
 });
+
+// const getAllProducts = catchAsync(async (req, res) => {
+//   const page = parseInt(req.query.page as string) || 1;
+//   const limit = parseInt(req.query.limit as string) || 10;
+//   const search = req.query.search as string;
+//   const category = req.query.category as string;
+
+//   const result = await ProductServices.getAllProducts(page, limit, search, category);
+
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: "Products fetched successfully",
+//     data: {
+//       metadata: {
+//         totalProducts: result.totalProducts,
+//         productsPerPage: limit,
+//         currentPage: page,
+//         totalPages: Math.ceil(result.totalProducts / limit),
+//       },
+//       products: result.products,
+//     },
+//   });
+// });
+
+
 
 // Get single product by id
 const getSingleProductById = catchAsync(async (req, res) => {

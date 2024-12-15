@@ -25,31 +25,6 @@ const getMe = catchAsync(async (req, res) => {
   });
 });
 
-const getMyPosts = catchAsync(async (req, res) => {
-  const {authorId} = req.params;
-  const result = await UserServices.getMyPosts(authorId);
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'User profile retrieved successfully',
-    data: result,
-  });
-});
-
-const updateProfile = catchAsync(async (req, res) => {
-  const profilePic = req.file;
-  const userId = req.user.userId;
-  console.log(userId);
-  const result = await UserServices.updateProfile(userId, req.body, profilePic);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Profile updated successfully",
-    data: result,
-  });
-});
-
 const changeUserRoleToAdmin = catchAsync(async (req, res) => {
   const { userId } = req.params;
   const result = await UserServices.changeUserRoleToAdmin(userId);
@@ -145,12 +120,10 @@ const unfollowUser = catchAsync(async (req, res) => {
 export const UserControllers = {
   getAllUser,
   getMe,
-  updateProfile,
   deleteUser,
   changeUserRoleToAdmin,
   changeUserRoleToUser,
   suspendUser,
-  getMyPosts,
   getSingleUserById,
   followUser,
   unfollowUser,

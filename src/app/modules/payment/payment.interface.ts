@@ -7,4 +7,9 @@ export type TPayment= {
   amount : string;
   transactionId : string;
   address:string;
+  streetAddress: string;
+  country: string;
+  state: string;
+  zipCode: string;
+  altPhoneNumber: string;
 }

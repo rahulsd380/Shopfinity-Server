@@ -24,58 +24,25 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const PaymentSchema = new mongoose_1.Schema({
-    name: {
-        type: String,
-        required: true,
-    },
-    email: {
-        type: String,
-        required: true,
-    },
-    phoneNumber: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    userId: {
-        type: String,
-        required: true,
-    },
-    amount: {
-        type: String,
-        required: true,
-    },
-    transactionId: {
-        type: String,
-        required: false,
-    },
-    address: {
-        type: String,
-        required: true,
-    },
-    streetAddress: {
-        type: String,
-        required: true,
-    },
-    country: {
-        type: String,
-        required: true,
-    },
-    state: {
-        type: String,
-        required: true,
-    },
-    zipCode: {
-        type: String,
-        required: true,
-    },
-    altPhoneNumber: {
-        type: String,
-        required: true,
-    },
+const cartItemSchema = new mongoose_1.Schema({
+    productId: { type: mongoose_1.Schema.Types.ObjectId, ref: "Product", required: true },
+    image: { type: String, required: true },
+    name: { type: String, required: true },
+    category: { type: String, required: true },
+    brand: { type: String, required: true },
+    stock: { type: String, required: true },
+    // seller: { type: String, required: true },
+    price: { type: Number, required: true },
+    quantity: { type: Number, required: true },
+}, { _id: false });
+const cartSchema = new mongoose_1.Schema({
+    userId: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
+    items: [cartItemSchema],
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
+    status: { type: String, enum: ["active", "purchased"], default: "active" },
 }, {
     timestamps: true,
 });
-const Payment = mongoose_1.default.model("Payment", PaymentSchema);
-exports.default = Payment;
+const Cart = mongoose_1.default.model("Cart", cartSchema);
+exports.default = Cart;

@@ -21,7 +21,7 @@ const sendEmail = (to, html) => __awaiter(void 0, void 0, void 0, function* () {
         secure: false,
         auth: {
             user: "rahulsd380@gmail.com",
-            pass: "aclt wlri apks hsnd",
+            pass: "suhn ieum xijm qilu",
         },
     });
     yield transporter.sendMail({
