@@ -14,9 +14,9 @@ app.use(cookieParser());
 app.use(express.json());
 
 // app.use(express.static("./uploads"));
-
+// 'http://localhost:3000', 
 // Middleware for handling CORS with credentials
-app.use(cors({ origin: ['http://localhost:3000', 'https://shopfinity-ecommerce.vercel.app/'], credentials: true }));
+app.use(cors({ origin: ['https://shopfinity-ecommerce.vercel.app'], credentials: true }));
 // app.use(cors({ origin: ['http://localhost:3000'], credentials: true }));
 
 // Root route
