@@ -16,6 +16,21 @@ const createProduct = catchAsync(async (req, res) => {
   });
 });
 
+// Add review on product
+const addReview = catchAsync(async (req, res) => {
+  const { productId } = req.params;
+  const { userId, rating, reviewText } = req.body;
+
+  const result = await ProductServices.addReview(productId, userId, rating, reviewText);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Review added successfully",
+    data: result,
+  });
+});
+
 // Get all product with filteration
 const getAllProducts = catchAsync(async (req, res) => { 
   const page = parseInt(req.query.page as string) || 1;
@@ -43,31 +58,6 @@ const getAllProducts = catchAsync(async (req, res) => {
     },
   });
 });
-
-// const getAllProducts = catchAsync(async (req, res) => {
-//   const page = parseInt(req.query.page as string) || 1;
-//   const limit = parseInt(req.query.limit as string) || 10;
-//   const search = req.query.search as string;
-//   const category = req.query.category as string;
-
-//   const result = await ProductServices.getAllProducts(page, limit, search, category);
-
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: "Products fetched successfully",
-//     data: {
-//       metadata: {
-//         totalProducts: result.totalProducts,
-//         productsPerPage: limit,
-//         currentPage: page,
-//         totalPages: Math.ceil(result.totalProducts / limit),
-//       },
-//       products: result.products,
-//     },
-//   });
-// });
-
 
 
 // Get single product by id
@@ -113,6 +103,7 @@ const deleteProduct = catchAsync(async (req, res) => {
 
 export const ProductControllers = {
   createProduct,
+  addReview,
   getAllProducts,
   getSingleProductById,
   updateProduct,

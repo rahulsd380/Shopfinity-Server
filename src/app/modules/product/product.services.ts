@@ -2,6 +2,7 @@
 import { TProduct } from "./product.interface";
 import { sendImageToCloudinary } from "../../utils/sendImageToCloudinary";
 import Product from "./product.model";
+import { Types } from "mongoose";
 
 // Create product
 const createProduct = async (payload: TProduct, files: any[]) => {
@@ -34,6 +35,43 @@ const createProduct = async (payload: TProduct, files: any[]) => {
 
   const result = await Product.create(payloadData);
   return result;
+};
+
+// Add review
+const addReview = async (
+  productId: string,
+  userId: string,
+  rating: number,
+  reviewText: string
+) => {
+  const review = {
+    userId: new Types.ObjectId(userId),
+    reviewId: new Types.ObjectId(),
+    rating,
+    reviewText,
+    reviewDate: new Date(),
+  };
+
+ 
+
+  const product = await Product.findById(productId);
+
+  if (!product) {
+    throw new Error("Product not found");
+  }
+
+  product.reviews = product.reviews || [];
+  product.reviews.push(review);
+
+  const totalRatings = product.reviews.reduce((sum, review) => sum + review.rating, 0);
+  const numberOfReviews = product.reviews.length;
+
+  product.ratings = numberOfReviews > 0 ? totalRatings / numberOfReviews : 0;
+  product.ratings = parseFloat(product.ratings.toFixed(1));
+
+  const updatedProduct = await product.save();
+
+  return updatedProduct;
 };
 
 // Get all product with filteration
@@ -102,48 +140,6 @@ const getAllProducts = async (
   };
 };
 
-// const getAllProducts = async (
-//   page: number,
-//   limit: number,
-//   search?: string,
-//   category?: string
-// ) => {
-//   const skip = (page - 1) * limit;
-
-//   // Search filter
-//   const searchFilter = search
-//     ? {
-//         $or: [
-//           { name: { $regex: search, $options: "i" } },
-//           { description: { $regex: search, $options: "i" } },
-//           { brand: { $regex: search, $options: "i" } },
-//         ],
-//       }
-//     : {};
-
-//   // Category filter (case-insensitive match)
-//   const categoryFilter = category
-//     ? { category: { $regex: category, $options: "i" } }
-//     : {};
-
-//   // Combined filters
-//   const filters = {
-//     ...searchFilter,
-//     ...categoryFilter,
-//   };
-
-//   const [products, totalProducts] = await Promise.all([
-//     Product.find(filters).skip(skip).limit(limit),
-//     Product.countDocuments(filters),
-//   ]);
-
-//   return {
-//     products,
-//     totalProducts,
-//   };
-// };
-
-
 
 // Get single product by id
 const getSingleProductById = async (productId: string) => {
@@ -186,14 +182,9 @@ const deleteProduct = async (productId: string) => {
 
 export const ProductServices = {
   createProduct,
+  addReview,
   getAllProducts,
   getSingleProductById,
   updateProduct,
-  deleteProduct,
-  // upvotePost,
-  // downvotePost,
-  // addComment,
-  // editComment,
-  // getMostUpvotedPost,
-  // deleteComment,
+  deleteProduct
 };

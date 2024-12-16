@@ -49,6 +49,12 @@ const productSchema = new Schema<TProduct>(
                     type: Types.ObjectId,
                     ref: "Review",
                 },
+                rating : {type : Number, required : true},
+                reviewDate: {
+                    type: Date,
+                    default: Date.now,
+                },
+                reviewText: {type : String, required : true}
             },
         ],
         vendorId: { type: Types.ObjectId, ref: "Vendor" },

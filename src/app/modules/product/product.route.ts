@@ -17,6 +17,14 @@ router.post(
   ProductControllers.createProduct
 );
 
+
+// Review on post
+router.post(
+  "/review/:productId",
+  auth(UserRole.user, UserRole.vendor, UserRole.seller, UserRole.admin),
+  ProductControllers.addReview
+);
+
 router.get("/", ProductControllers.getAllProducts);
 router.get("/:productId", ProductControllers.getSingleProductById);
 router.put(
