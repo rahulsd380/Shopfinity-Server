@@ -7,8 +7,9 @@ import auth from '../../middlewares/auth';
 const router = express.Router();
 
 router.get('/', UserControllers.getAllUser);
-router.get('/me', auth('user', 'admin'), UserControllers.getMe);
+router.get('/me', auth('user', 'admin', 'vendor', 'seller'), UserControllers.getMe);
 router.get('/:userId', UserControllers.getSingleUserById);
+router.get('/my-orders/:userId',auth('user', 'admin', 'vendor', 'seller'), UserControllers.getMyOrders);
 // router.get('/my-posts/:authorId', auth('user', 'admin'), UserControllers.getMyPosts);
 
 // router.put('/me', auth('user', 'admin'),

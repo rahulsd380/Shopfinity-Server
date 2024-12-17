@@ -10,4 +10,5 @@ const router = express_1.default.Router();
 router.get("/", payment_controller_1.PaymentControllers.getAllPaymentHistories);
 router.post("/create-payment", payment_controller_1.PaymentControllers.payment);
 router.post("/payment-success", payment_controller_1.PaymentControllers.paymentConfirmationMessage);
+router.get("/:sellerId", payment_controller_1.PaymentControllers.getPaymentsBySellerId);
 exports.PaymentRoutes = router;

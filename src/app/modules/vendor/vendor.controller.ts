@@ -40,6 +40,30 @@ const getSingleVendorById = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getMyProducts = catchAsync(async (req, res) => {
+  const { sellerId } = req.params;
+  const result = await VendorServices.getMyProducts(sellerId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Product fetched successfully.',
+    data: result,
+  });
+});
+
+const getSingleVendorBySellerId = catchAsync(async (req: Request, res: Response) => {
+  const { sellerId } = req.params;
+  const result = await VendorServices.getSingleVendorBySellerId(sellerId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Vendor fetched successfully.",
+    data: result,
+  });
+});
+
 const getMyShop = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.params;
   const result = await VendorServices.getMyShop(userId);
@@ -65,6 +89,8 @@ const updateVendor = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+
+// For admin (start)
 const approveSeller = catchAsync(async (req: Request, res: Response) => {
   const { sellerId } = req.params;
   const result = await VendorServices.approveSeller(sellerId);
@@ -113,10 +139,25 @@ const deleteVendor = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// End
+
+
+const followVendor = catchAsync(async (req, res) => {
+
+  const result = await VendorServices.followVendor(req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User followed successfully',
+    data: result,
+  });
+});
+
 export const VendorControllers = {
   becomeSeller,
   getAllVendors,
   getSingleVendorById,
+  getSingleVendorBySellerId,
   getMyShop,
   updateVendor,
   deleteVendor,
@@ -124,4 +165,6 @@ export const VendorControllers = {
   approveSeller,
   rejectRequest,
   blacklistSeller,
+  followVendor,
+  getMyProducts,
 };

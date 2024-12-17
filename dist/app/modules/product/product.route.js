@@ -14,8 +14,14 @@ router.post("/create-product", multer_config_1.multerUpload.array('files', 10), 
     req.body = JSON.parse(req.body.data);
     next();
 }, product_controller_1.ProductControllers.createProduct);
+// Review on post
+router.post("/review/:productId", (0, auth_1.default)(user_constant_1.UserRole.user, user_constant_1.UserRole.vendor, user_constant_1.UserRole.seller, user_constant_1.UserRole.admin), product_controller_1.ProductControllers.addReview);
 router.get("/", product_controller_1.ProductControllers.getAllProducts);
 router.get("/:productId", product_controller_1.ProductControllers.getSingleProductById);
+router.get("/category/:categoryName", product_controller_1.ProductControllers.getProductsByCategory);
+// router.get("/my-products/:sellerId", ProductControllers.getMyProducts);
+// Get all brands
+router.get("/brands", product_controller_1.ProductControllers.getAllBrands);
 router.put("/update-product/:productId", multer_config_1.multerUpload.array('files', 10), (req, res, next) => {
     req.body = JSON.parse(req.body.data);
     next();

@@ -5,7 +5,7 @@ import Cart from "./cart.model";
 import mongoose from "mongoose";
 
 // Add product to cart
-const addToCart = async (userId: string, productId: string, quantity: number) => {
+const addToCart = async (userId: string, sellerId:string, productId: string, quantity: number) => {
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       throw new AppError(httpStatus.BAD_REQUEST, "Invalid product ID");
     }
@@ -22,7 +22,8 @@ const addToCart = async (userId: string, productId: string, quantity: number) =>
         items: [
           {
             productId: product._id,
-            image: product.images[0],  // Make sure the image is being passed here
+            sellerId,
+            image: product.images[0],
             name: product.name,
             category: product.category,
             brand: product.brand,
@@ -43,6 +44,7 @@ const addToCart = async (userId: string, productId: string, quantity: number) =>
       } else {
         cart.items.push({
           productId: product._id,
+          sellerId,
           image: product.images[0],
           name: product.name,
           category: product.category,

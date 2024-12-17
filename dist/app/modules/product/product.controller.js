@@ -28,6 +28,18 @@ const createProduct = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         data: result,
     });
 }));
+// Add review on product
+const addReview = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { productId } = req.params;
+    const { userId, userName, rating, reviewText } = req.body;
+    const result = yield product_services_1.ProductServices.addReview(productId, userId, userName, rating, reviewText);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Review added successfully",
+        data: result,
+    });
+}));
 // Get all product with filteration
 const getAllProducts = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const page = parseInt(req.query.page) || 1;
@@ -53,27 +65,6 @@ const getAllProducts = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
         },
     });
 }));
-// const getAllProducts = catchAsync(async (req, res) => {
-//   const page = parseInt(req.query.page as string) || 1;
-//   const limit = parseInt(req.query.limit as string) || 10;
-//   const search = req.query.search as string;
-//   const category = req.query.category as string;
-//   const result = await ProductServices.getAllProducts(page, limit, search, category);
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: "Products fetched successfully",
-//     data: {
-//       metadata: {
-//         totalProducts: result.totalProducts,
-//         productsPerPage: limit,
-//         currentPage: page,
-//         totalPages: Math.ceil(result.totalProducts / limit),
-//       },
-//       products: result.products,
-//     },
-//   });
-// });
 // Get single product by id
 const getSingleProductById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { productId } = req.params;
@@ -82,6 +73,36 @@ const getSingleProductById = (0, catchAsync_1.default)((req, res) => __awaiter(v
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'Product fetched successfully.',
+        data: result,
+    });
+}));
+// Get single product by category
+const getProductsByCategory = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { categoryName } = req.params;
+    const result = yield product_services_1.ProductServices.getProductsByCategory(categoryName);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Product fetched by category successfully.',
+        data: result,
+    });
+}));
+// const getMyProducts = catchAsync(async (req, res) => {
+//   const { sellerId } = req.params;
+//   const result = await ProductServices.getMyProducts(sellerId);
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: 'Product fetched successfully.',
+//     data: result,
+//   });
+// });
+const getAllBrands = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield product_services_1.ProductServices.getAllBrands();
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Brands fetched successfully",
         data: result,
     });
 }));
@@ -110,8 +131,12 @@ const deleteProduct = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
 }));
 exports.ProductControllers = {
     createProduct,
+    addReview,
     getAllProducts,
     getSingleProductById,
+    getProductsByCategory,
     updateProduct,
     deleteProduct,
+    getAllBrands,
+    // getMyProducts
 };

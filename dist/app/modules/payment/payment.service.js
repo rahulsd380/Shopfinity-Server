@@ -28,6 +28,7 @@ const payment = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const transactionId = `TNX-${Date.now()}-${payload.email}`;
     // Create a new payment record
     const payment = new payment_model_1.default({
+        sellerIds: payload.sellerIds,
         name: payload.name,
         email: payload.email,
         phoneNumber: payload.phoneNumber,
@@ -40,18 +41,18 @@ const payment = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         zipCode: payload.zipCode,
         altPhoneNumber: payload.altPhoneNumber,
         transactionId,
+        status: "pending"
     });
     yield payment.save();
-    // Push the productIds into the orders array in the User collection
     yield auth_model_1.User.findByIdAndUpdate(payload.userId, {
         $push: { orders: { $each: payload.productIds } },
     }, { new: true });
     // Empty the user's cart
     yield cart_model_1.default.findOneAndUpdate({ userId: payload.userId }, { $set: { items: [] } }, { new: true });
-    // Initiate the payment process
     const paymentData = {
         transactionId,
         amount: payload.amount,
+        sellerIds: payload.sellerIds,
         name: payload.name,
         email: payload.email,
         phoneNumber: payload.phoneNumber,
@@ -62,6 +63,7 @@ const payment = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         state: payload.state,
         zipCode: payload.zipCode,
         altPhoneNumber: payload.altPhoneNumber,
+        status: "pending"
     };
     const paymentSession = yield (0, payment_utils_1.initiatePayment)(paymentData);
     return paymentSession;
@@ -78,8 +80,13 @@ const paymentConfirmation = (transactionId, status) => __awaiter(void 0, void 0,
     }
     return `<h1>Payment ${status}</h1>`;
 });
+const getPaymentsBySellerId = (sellerId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield payment_model_1.default.find({ sellerIds: sellerId });
+    return result;
+});
 exports.PaymentServices = {
     payment,
     paymentConfirmation,
     getAllPaymentHistories,
+    getPaymentsBySellerId,
 };

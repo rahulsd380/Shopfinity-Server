@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductServices = void 0;
 const sendImageToCloudinary_1 = require("../../utils/sendImageToCloudinary");
 const product_model_1 = __importDefault(require("./product.model"));
+const mongoose_1 = require("mongoose");
+const vendor_model_1 = __importDefault(require("../vendor/vendor.model"));
 // Create product
 const createProduct = (payload, files) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, description, price, category, brand, stock, vendorId } = payload;
@@ -39,8 +41,36 @@ const createProduct = (payload, files) => __awaiter(void 0, void 0, void 0, func
         createdAt: new Date(),
         vendorId,
     };
+    // Create the product
     const result = yield product_model_1.default.create(payloadData);
+    yield vendor_model_1.default.findOneAndUpdate({ userId: vendorId }, // Match the vendor by userId
+    { $addToSet: { products: result._id } }, // Add the product's _id to the products array
+    { new: true } // Return the updated document
+    );
     return result;
+});
+// Add review
+const addReview = (productId, userId, userName, rating, reviewText) => __awaiter(void 0, void 0, void 0, function* () {
+    const review = {
+        userId: new mongoose_1.Types.ObjectId(userId),
+        userName,
+        reviewId: new mongoose_1.Types.ObjectId(),
+        rating,
+        reviewText,
+        reviewDate: new Date(),
+    };
+    const product = yield product_model_1.default.findById(productId);
+    if (!product) {
+        throw new Error("Product not found");
+    }
+    product.reviews = product.reviews || [];
+    product.reviews.push(review);
+    const totalRatings = product.reviews.reduce((sum, review) => sum + review.rating, 0);
+    const numberOfReviews = product.reviews.length;
+    product.ratings = numberOfReviews > 0 ? totalRatings / numberOfReviews : 0;
+    product.ratings = parseFloat(product.ratings.toFixed(1));
+    const updatedProduct = yield product.save();
+    return updatedProduct;
 });
 // Get all product with filteration
 const getAllProducts = (page, limit, search, category, brand, rating, priceRange) => __awaiter(void 0, void 0, void 0, function* () {
@@ -85,45 +115,24 @@ const getAllProducts = (page, limit, search, category, brand, rating, priceRange
         totalProducts,
     };
 });
-// const getAllProducts = async (
-//   page: number,
-//   limit: number,
-//   search?: string,
-//   category?: string
-// ) => {
-//   const skip = (page - 1) * limit;
-//   // Search filter
-//   const searchFilter = search
-//     ? {
-//         $or: [
-//           { name: { $regex: search, $options: "i" } },
-//           { description: { $regex: search, $options: "i" } },
-//           { brand: { $regex: search, $options: "i" } },
-//         ],
-//       }
-//     : {};
-//   // Category filter (case-insensitive match)
-//   const categoryFilter = category
-//     ? { category: { $regex: category, $options: "i" } }
-//     : {};
-//   // Combined filters
-//   const filters = {
-//     ...searchFilter,
-//     ...categoryFilter,
-//   };
-//   const [products, totalProducts] = await Promise.all([
-//     Product.find(filters).skip(skip).limit(limit),
-//     Product.countDocuments(filters),
-//   ]);
-//   return {
-//     products,
-//     totalProducts,
-//   };
-// };
 // Get single product by id
 const getSingleProductById = (productId) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield product_model_1.default.findById(productId);
     return result;
+});
+// Get single product by category
+const getProductsByCategory = (categoryName) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield product_model_1.default.find({ category: categoryName });
+    return result;
+});
+// const getMyProducts = async (sellerId: string) => {
+//   const result = await Product.find({vendorId:sellerId});
+//   return result;
+// };
+// Get all unique brands
+const getAllBrands = () => __awaiter(void 0, void 0, void 0, function* () {
+    const brands = yield product_model_1.default.find({ brand: "brand" });
+    return brands;
 });
 // Update product
 const updateProduct = (id, payload, productPic) => __awaiter(void 0, void 0, void 0, function* () {
@@ -151,14 +160,12 @@ const deleteProduct = (productId) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.ProductServices = {
     createProduct,
+    addReview,
     getAllProducts,
     getSingleProductById,
+    getProductsByCategory,
     updateProduct,
     deleteProduct,
-    // upvotePost,
-    // downvotePost,
-    // addComment,
-    // editComment,
-    // getMostUpvotedPost,
-    // deleteComment,
+    getAllBrands,
+    // getMyProducts,
 };

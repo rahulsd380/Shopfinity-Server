@@ -43,10 +43,17 @@ const productSchema = new mongoose_1.Schema({
                 type: mongoose_1.Types.ObjectId,
                 ref: "User",
             },
+            userName: { type: String },
             reviewId: {
                 type: mongoose_1.Types.ObjectId,
                 ref: "Review",
             },
+            rating: { type: Number, required: true },
+            reviewDate: {
+                type: Date,
+                default: Date.now,
+            },
+            reviewText: { type: String, required: true }
         },
     ],
     vendorId: { type: mongoose_1.Types.ObjectId, ref: "Vendor" },

@@ -19,9 +19,10 @@ const cart_service_1 = require("./cart.service");
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 // Add product to cart
 const addToCart = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId, quantity } = req.body;
+    const { userId, sellerId, quantity, } = req.body;
+    // console.log(req.body);
     const { productId } = req.params;
-    const result = yield cart_service_1.CartServices.addToCart(userId, productId, quantity);
+    const result = yield cart_service_1.CartServices.addToCart(userId, sellerId, productId, quantity);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.CREATED,
         success: true,

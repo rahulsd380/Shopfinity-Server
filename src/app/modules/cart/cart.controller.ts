@@ -7,9 +7,10 @@ import catchAsync from "../../utils/catchAsync";
 // Add product to cart
 
   const addToCart = catchAsync(async (req, res) => {
-    const { userId, quantity } = req.body;
+    const { userId,sellerId, quantity, } = req.body;
+    // console.log(req.body);
       const { productId } = req.params;
-      const result = await CartServices.addToCart(userId, productId, quantity);
+      const result = await CartServices.addToCart(userId,sellerId, productId, quantity);
   
       sendResponse(res, {
         statusCode: httpStatus.CREATED,

@@ -36,12 +36,12 @@ const PaymentSchema = new mongoose_1.Schema({
     phoneNumber: {
         type: String,
         required: true,
-        trim: true,
     },
     userId: {
         type: String,
         required: true,
     },
+    sellerIds: { type: [String], required: true },
     amount: {
         type: String,
         required: true,
@@ -73,6 +73,10 @@ const PaymentSchema = new mongoose_1.Schema({
     altPhoneNumber: {
         type: String,
         required: true,
+    },
+    status: {
+        type: String,
+        default: "pending"
     },
 }, {
     timestamps: true,

@@ -31,7 +31,7 @@ const cartItemSchema = new mongoose_1.Schema({
     category: { type: String, required: true },
     brand: { type: String, required: true },
     stock: { type: String, required: true },
-    // seller: { type: String, required: true },
+    sellerId: { type: mongoose_1.Schema.Types.ObjectId, ref: "Vendor", required: true },
     price: { type: Number, required: true },
     quantity: { type: Number, required: true },
 }, { _id: false });

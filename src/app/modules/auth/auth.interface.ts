@@ -28,6 +28,7 @@ export type TUser= {
   contactNumber?: string;
   orders?: Types.ObjectId[];
   wishlist?: Types.ObjectId[];
+  followings : string[];
 }
 
 export interface UserModel extends Model<TUser> {

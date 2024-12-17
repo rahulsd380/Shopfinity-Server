@@ -9,7 +9,7 @@ export type TProduct = {
   stock: number;
   images: string[];
   ratings?: number;
-  reviews?: { userId: Types.ObjectId; reviewId: Types.ObjectId, rating:number, reviewText: string, reviewDate: Date }[];
+  reviews?: { userId: Types.ObjectId; userName:string; reviewId: Types.ObjectId, rating:number, reviewText: string, reviewDate: Date }[];
   vendorId : { vendorId: Types.ObjectId};
   createdAt: Date;
 };

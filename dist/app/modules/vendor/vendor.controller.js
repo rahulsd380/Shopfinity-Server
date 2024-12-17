@@ -47,6 +47,26 @@ const getSingleVendorById = (0, catchAsync_1.default)((req, res) => __awaiter(vo
         data: result,
     });
 }));
+const getMyProducts = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { sellerId } = req.params;
+    const result = yield vendor_service_1.VendorServices.getMyProducts(sellerId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Product fetched successfully.',
+        data: result,
+    });
+}));
+const getSingleVendorBySellerId = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { sellerId } = req.params;
+    const result = yield vendor_service_1.VendorServices.getSingleVendorBySellerId(sellerId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Vendor fetched successfully.",
+        data: result,
+    });
+}));
 const getMyShop = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     const result = yield vendor_service_1.VendorServices.getMyShop(userId);
@@ -68,6 +88,7 @@ const updateVendor = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
         data: result,
     });
 }));
+// For admin (start)
 const approveSeller = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { sellerId } = req.params;
     const result = yield vendor_service_1.VendorServices.approveSeller(sellerId);
@@ -108,14 +129,27 @@ const deleteVendor = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
         data: result,
     });
 }));
+// End
+const followVendor = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield vendor_service_1.VendorServices.followVendor(req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'User followed successfully',
+        data: result,
+    });
+}));
 exports.VendorControllers = {
     becomeSeller,
     getAllVendors,
     getSingleVendorById,
+    getSingleVendorBySellerId,
     getMyShop,
     updateVendor,
     deleteVendor,
     approveSeller,
     rejectRequest,
     blacklistSeller,
+    followVendor,
+    getMyProducts,
 };

@@ -11,8 +11,9 @@ const auth_1 = __importDefault(require("../../middlewares/auth"));
 // import { upload } from '../../utils/sendImageToCloudinary';
 const router = express_1.default.Router();
 router.get('/', users_controller_1.UserControllers.getAllUser);
-router.get('/me', (0, auth_1.default)('user', 'admin'), users_controller_1.UserControllers.getMe);
+router.get('/me', (0, auth_1.default)('user', 'admin', 'vendor', 'seller'), users_controller_1.UserControllers.getMe);
 router.get('/:userId', users_controller_1.UserControllers.getSingleUserById);
+router.get('/my-orders/:userId', (0, auth_1.default)('user', 'admin', 'vendor', 'seller'), users_controller_1.UserControllers.getMyOrders);
 // router.get('/my-posts/:authorId', auth('user', 'admin'), UserControllers.getMyPosts);
 // router.put('/me', auth('user', 'admin'),
 //   multerUpload.single("file"),

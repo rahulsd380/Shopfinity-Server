@@ -15,8 +15,11 @@ router.post(
 );
 
 router.get("/", VendorControllers.getAllVendors);
-router.get("/:sellerId", VendorControllers.getSingleVendorById);
+router.get("/:sellerId", VendorControllers.getSingleVendorBySellerId);
+router.get("/my-products/:sellerId", VendorControllers.getMyProducts);
+router.get("/single/:sellerId", VendorControllers.getSingleVendorById);
 router.get("/my-shop/:userId", VendorControllers.getMyShop);
+router.put("/follow", VendorControllers.followVendor);
 router.put(
   "/update-seller/:vendorId",
   multerUpload.single("file"),

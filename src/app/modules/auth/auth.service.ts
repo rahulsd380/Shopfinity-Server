@@ -12,7 +12,7 @@ import bcrypt from 'bcrypt';
 
 // Create user
 const createUser = async (file: any, payload: Partial<TUser>) => {
-  const { name, email, password, contactNumber, role, address, orders, wishlist } = payload;
+  const { name, email, password, contactNumber, role, address, orders, wishlist, followings } = payload;
 
   if (file && file.path) {
     const imageName = `${name}-${email}`;
@@ -40,6 +40,7 @@ const createUser = async (file: any, payload: Partial<TUser>) => {
     isVerified: false,
     orders: orders || [],
     wishlist: wishlist || [],
+    followings : followings || [],
   };
 
   // Checking if user already exists

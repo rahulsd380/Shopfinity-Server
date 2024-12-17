@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.VendorServices = void 0;
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const sendImageToCloudinary_1 = require("../../utils/sendImageToCloudinary");
+const auth_model_1 = require("../auth/auth.model");
+const product_model_1 = __importDefault(require("../product/product.model"));
 const vendor_model_1 = __importDefault(require("./vendor.model"));
 const becomeSeller = (file, payload) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(file);
@@ -51,6 +53,15 @@ const getSingleVendorById = (sellerId) => __awaiter(void 0, void 0, void 0, func
     const result = yield vendor_model_1.default.findById(sellerId);
     return result;
 });
+// For seller to get their added products
+const getMyProducts = (sellerId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield product_model_1.default.find({ vendorId: sellerId });
+    return result;
+});
+const getSingleVendorBySellerId = (sellerId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield vendor_model_1.default.findOne({ userId: sellerId });
+    return result;
+});
 const getMyShop = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield vendor_model_1.default.findOne({ userId: userId });
     return result;
@@ -69,11 +80,16 @@ const updateVendor = (vendorId, payload, file) => __awaiter(void 0, void 0, void
     return result;
 });
 const approveSeller = (vendorId) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield vendor_model_1.default.findByIdAndUpdate(vendorId, {
+    const vendor = yield vendor_model_1.default.findByIdAndUpdate(vendorId, {
         status: "approved"
     }, {
         new: true,
         runValidators: true,
+    });
+    const result = yield auth_model_1.User.findByIdAndUpdate(vendor === null || vendor === void 0 ? void 0 : vendor.userId, {
+        role: 'seller',
+    }, {
+        new: true,
     });
     return result;
 });
@@ -99,14 +115,22 @@ const deleteVendor = (vendorId) => __awaiter(void 0, void 0, void 0, function* (
     const result = yield vendor_model_1.default.findByIdAndDelete(vendorId);
     return result;
 });
+const followVendor = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield auth_model_1.User.findByIdAndUpdate(payload.userId, { $addToSet: { followings: payload.vendorId } }, { new: true });
+    const targetUser = yield vendor_model_1.default.findByIdAndUpdate(payload.vendorId, { $addToSet: { followers: payload.userId } }, { new: true });
+    return { user, targetUser };
+});
 exports.VendorServices = {
     becomeSeller,
     getAllVendors,
     getSingleVendorById,
+    getSingleVendorBySellerId,
     getMyShop,
     updateVendor,
     deleteVendor,
     approveSeller,
     rejectRequest,
     blacklistSeller,
+    followVendor,
+    getMyProducts,
 };

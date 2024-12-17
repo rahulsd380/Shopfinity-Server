@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { sendImageToCloudinary } from "../../utils/sendImageToCloudinary";
+import { User } from "../auth/auth.model";
+import Product from "../product/product.model";
 import { TVendor } from "./vendor.interface";
 import Vendor from "./vendor.model";
 
@@ -55,6 +57,18 @@ const getSingleVendorById = async (sellerId: string) => {
   return result;
 };
 
+// For seller to get their added products
+const getMyProducts = async (sellerId: string) => {
+  const result = await Product.find({vendorId:sellerId});
+  return result;
+};
+
+
+const getSingleVendorBySellerId = async (sellerId: string) => {
+  const result = await Vendor.findOne({userId:sellerId});
+  return result;
+};
+
 const getMyShop = async (userId: string) => {
   const result = await Vendor.findOne({ userId: userId });
   return result;
@@ -78,7 +92,7 @@ const updateVendor = async (vendorId: string, payload: Partial<TVendor>, file: a
 };
 
 const approveSeller = async (vendorId: string) => {
-  const result = await Vendor.findByIdAndUpdate(vendorId,
+  const vendor =await Vendor.findByIdAndUpdate(vendorId,
     {
       status: "approved"
     },
@@ -86,6 +100,16 @@ const approveSeller = async (vendorId: string) => {
       new: true,
       runValidators: true,
     });
+
+    const result = await User.findByIdAndUpdate(
+      vendor?.userId,
+      {
+        role: 'seller',
+      },
+      {
+        new: true,
+      }
+    );
 
   return result;
 };
@@ -121,10 +145,27 @@ const deleteVendor = async (vendorId: string) => {
   return result;
 };
 
+const followVendor = async (payload : {userId:string, vendorId:string}) => {
+  const user = await User.findByIdAndUpdate(
+    payload.userId,
+    { $addToSet: { followings: payload.vendorId } },
+    { new: true }
+  );
+
+  const targetUser = await Vendor.findByIdAndUpdate(
+    payload.vendorId,
+    { $addToSet: { followers: payload.userId } },
+    { new: true }
+  );
+
+  return { user, targetUser };
+};
+
 export const VendorServices = {
   becomeSeller,
   getAllVendors,
   getSingleVendorById,
+  getSingleVendorBySellerId,
   getMyShop,
   updateVendor,
   deleteVendor,
@@ -132,4 +173,6 @@ export const VendorServices = {
   approveSeller,
   rejectRequest,
   blacklistSeller,
+  followVendor,
+  getMyProducts,
 };

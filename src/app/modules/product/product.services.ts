@@ -3,6 +3,7 @@ import { TProduct } from "./product.interface";
 import { sendImageToCloudinary } from "../../utils/sendImageToCloudinary";
 import Product from "./product.model";
 import { Types } from "mongoose";
+import Vendor from "../vendor/vendor.model";
 
 // Create product
 const createProduct = async (payload: TProduct, files: any[]) => {
@@ -33,19 +34,31 @@ const createProduct = async (payload: TProduct, files: any[]) => {
     vendorId,
   };
 
+  // Create the product
   const result = await Product.create(payloadData);
+
+  await Vendor.findOneAndUpdate(
+    { userId: vendorId }, // Match the vendor by userId
+    { $addToSet: { products: result._id } }, // Add the product's _id to the products array
+    { new: true } // Return the updated document
+  );
+  
+
   return result;
 };
+
 
 // Add review
 const addReview = async (
   productId: string,
   userId: string,
+  userName: string,
   rating: number,
   reviewText: string
 ) => {
   const review = {
     userId: new Types.ObjectId(userId),
+    userName,
     reviewId: new Types.ObjectId(),
     rating,
     reviewText,
@@ -147,6 +160,24 @@ const getSingleProductById = async (productId: string) => {
   return result;
 };
 
+// Get single product by category
+const getProductsByCategory = async (categoryName: string) => {
+  const result = await Product.find({category : categoryName});
+  return result;
+};
+
+// const getMyProducts = async (sellerId: string) => {
+//   const result = await Product.find({vendorId:sellerId});
+//   return result;
+// };
+
+// Get all unique brands
+const getAllBrands = async () => {
+  const brands = await Product.find({ brand: "brand" });
+  return brands;
+};
+
+
 // Update product
 const updateProduct = async (id: string, payload: Partial<TProduct>, productPic: any) => {
   let productPicUrl: string | undefined;
@@ -185,6 +216,9 @@ export const ProductServices = {
   addReview,
   getAllProducts,
   getSingleProductById,
+  getProductsByCategory,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getAllBrands,
+  // getMyProducts,
 };

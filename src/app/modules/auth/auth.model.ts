@@ -50,7 +50,7 @@ const userSchema = new Schema<TUser>(
     orders: [
       {
         type: Types.ObjectId,
-        ref: "Order",
+        ref: "Product",
       },
     ],
     wishlist: [
@@ -59,6 +59,7 @@ const userSchema = new Schema<TUser>(
         ref: "Product",
       },
     ],
+    followings : {type : [String], default : []}
   },
   {
     timestamps: true,

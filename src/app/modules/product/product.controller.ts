@@ -19,9 +19,9 @@ const createProduct = catchAsync(async (req, res) => {
 // Add review on product
 const addReview = catchAsync(async (req, res) => {
   const { productId } = req.params;
-  const { userId, rating, reviewText } = req.body;
+  const { userId,userName, rating, reviewText } = req.body;
 
-  const result = await ProductServices.addReview(productId, userId, rating, reviewText);
+  const result = await ProductServices.addReview(productId, userId,userName, rating, reviewText);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -73,6 +73,43 @@ const getSingleProductById = catchAsync(async (req, res) => {
   });
 });
 
+// Get single product by category
+const getProductsByCategory = catchAsync(async (req, res) => {
+  const { categoryName } = req.params;
+  const result = await ProductServices.getProductsByCategory(categoryName);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Product fetched by category successfully.',
+    data: result,
+  });
+});
+
+// const getMyProducts = catchAsync(async (req, res) => {
+//   const { sellerId } = req.params;
+//   const result = await ProductServices.getMyProducts(sellerId);
+
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: 'Product fetched successfully.',
+//     data: result,
+//   });
+// });
+
+const getAllBrands = catchAsync(async (req, res) => {
+  const result = await ProductServices.getAllBrands();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Brands fetched successfully",
+    data: result,
+  });
+});
+
+
+
 // Update product
 const updateProduct = catchAsync(async (req, res) => {
   const file = req.file;
@@ -106,7 +143,10 @@ export const ProductControllers = {
   addReview,
   getAllProducts,
   getSingleProductById,
+  getProductsByCategory,
   updateProduct,
   deleteProduct,
+  getAllBrands,
+  // getMyProducts
 
 };

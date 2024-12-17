@@ -7,7 +7,7 @@ type TCartItem = {
   category: string;
   brand: string;
   stock: string;
-//   seller: string;
+  sellerId: mongoose.Types.ObjectId;
   price: number;
   quantity: number;
 }

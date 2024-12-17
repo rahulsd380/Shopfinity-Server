@@ -13,8 +13,11 @@ router.post("/become-seller", multer_config_1.multerUpload.single('file'), (req,
     next();
 }, vendor_controller_1.VendorControllers.becomeSeller);
 router.get("/", vendor_controller_1.VendorControllers.getAllVendors);
-router.get("/:sellerId", vendor_controller_1.VendorControllers.getSingleVendorById);
+router.get("/:sellerId", vendor_controller_1.VendorControllers.getSingleVendorBySellerId);
+router.get("/my-products/:sellerId", vendor_controller_1.VendorControllers.getMyProducts);
+router.get("/single/:sellerId", vendor_controller_1.VendorControllers.getSingleVendorById);
 router.get("/my-shop/:userId", vendor_controller_1.VendorControllers.getMyShop);
+router.put("/follow", vendor_controller_1.VendorControllers.followVendor);
 router.put("/update-seller/:vendorId", multer_config_1.multerUpload.single("file"), (req, res, next) => {
     req.body = JSON.parse(req.body.data);
     next();

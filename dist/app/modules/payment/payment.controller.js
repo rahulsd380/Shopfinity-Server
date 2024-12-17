@@ -40,8 +40,19 @@ const paymentConfirmationMessage = (0, catchAsync_1.default)((req, res) => __awa
     const result = yield payment_service_1.PaymentServices.paymentConfirmation(transactionId, status);
     res.send(result);
 }));
+const getPaymentsBySellerId = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { sellerId } = req.params;
+    const result = yield payment_service_1.PaymentServices.getPaymentsBySellerId(sellerId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Payment histories retrieved successfully for the seller",
+        data: result,
+    });
+}));
 exports.PaymentControllers = {
     payment,
     paymentConfirmationMessage,
     getAllPaymentHistories,
+    getPaymentsBySellerId,
 };

@@ -17,6 +17,7 @@ const payment = async (payload: TPayment & { productIds: string[] }) => {
 
   // Create a new payment record
   const payment = new Payment({
+    sellerIds : payload.sellerIds,
     name: payload.name,
     email: payload.email,
     phoneNumber: payload.phoneNumber,
@@ -29,10 +30,10 @@ const payment = async (payload: TPayment & { productIds: string[] }) => {
     zipCode: payload.zipCode,
     altPhoneNumber: payload.altPhoneNumber,
     transactionId,
+    status: "pending"
   });
   await payment.save();
 
-  // Push the productIds into the orders array in the User collection
   await User.findByIdAndUpdate(
     payload.userId,
     {
@@ -48,10 +49,10 @@ const payment = async (payload: TPayment & { productIds: string[] }) => {
     { new: true }
   );
 
-  // Initiate the payment process
   const paymentData = {
     transactionId,
     amount: payload.amount,
+    sellerIds : payload.sellerIds,
     name: payload.name,
     email: payload.email,
     phoneNumber: payload.phoneNumber,
@@ -62,6 +63,7 @@ const payment = async (payload: TPayment & { productIds: string[] }) => {
     state: payload.state,
     zipCode: payload.zipCode,
     altPhoneNumber: payload.altPhoneNumber,
+    status : "pending"
   };
 
   const paymentSession = await initiatePayment(paymentData);
@@ -87,8 +89,14 @@ const paymentConfirmation = async (transactionId: string, status: string) => {
   return `<h1>Payment ${status}</h1>`;
 };
 
+const getPaymentsBySellerId = async (sellerId: string) => {
+  const result = await Payment.find({ sellerIds: sellerId });
+  return result;
+};
+
 export const PaymentServices = {
   payment,
   paymentConfirmation,
   getAllPaymentHistories,
+  getPaymentsBySellerId,
 };

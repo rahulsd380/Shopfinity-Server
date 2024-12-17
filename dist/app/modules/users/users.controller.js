@@ -37,6 +37,18 @@ const getMe = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, 
         data: result,
     });
 }));
+const getMyOrders = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // const userId = req.user.userId;
+    const { userId } = req.params;
+    console.log(userId);
+    const result = yield users_services_1.UserServices.getMyOrders(userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Orders retrieved successfully',
+        data: result,
+    });
+}));
 const changeUserRoleToAdmin = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     const result = yield users_services_1.UserServices.changeUserRoleToAdmin(userId);
@@ -121,4 +133,5 @@ exports.UserControllers = {
     getSingleUserById,
     followUser,
     unfollowUser,
+    getMyOrders,
 };

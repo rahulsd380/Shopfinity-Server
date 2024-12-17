@@ -25,7 +25,7 @@ const sendEmail_1 = require("../../utils/sendEmail");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 // Create user
 const createUser = (file, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, email, password, contactNumber, role, address, orders, wishlist } = payload;
+    const { name, email, password, contactNumber, role, address, orders, wishlist, followings } = payload;
     if (file && file.path) {
         const imageName = `${name}-${email}`;
         const path = file.path;
@@ -51,6 +51,7 @@ const createUser = (file, payload) => __awaiter(void 0, void 0, void 0, function
         isVerified: false,
         orders: orders || [],
         wishlist: wishlist || [],
+        followings: followings || [],
     };
     // Checking if user already exists
     const isUserExists = yield auth_model_1.User.findOne({ email: payloadData.email });

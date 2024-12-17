@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import httpStatus from 'http-status';
+import AppError from '../../errors/AppError';
 import { User } from '../auth/auth.model';
 
 const getAllUser = async () => {
@@ -11,6 +13,17 @@ const getMe = async (userId: string) => {
   const result = await User.findById(userId);
   return result;
 };
+
+const getMyOrders = async (userId: string) => {
+  const user = await User.findById(userId).populate('orders');
+  
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  return user.orders;
+};
+
 
 // const updateProfile = async (id: string, payload: Partial<TUser>, profilePic: any) => {
 //   let profilePicUrl: string | undefined;
@@ -124,4 +137,5 @@ export const UserServices = {
   getSingleUserById,
   followUser,
   unfollowUser,
+  getMyOrders,
 };

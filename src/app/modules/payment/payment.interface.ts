@@ -4,6 +4,7 @@ export type TPayment= {
   email: string;
   phoneNumber: string;
   userId: string;
+  sellerIds : string[];
   amount : string;
   transactionId : string;
   address:string;
@@ -12,4 +13,5 @@ export type TPayment= {
   state: string;
   zipCode: string;
   altPhoneNumber: string;
+  status : string;
 }

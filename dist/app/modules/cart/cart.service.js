@@ -19,7 +19,7 @@ const product_model_1 = __importDefault(require("../product/product.model"));
 const cart_model_1 = __importDefault(require("./cart.model"));
 const mongoose_1 = __importDefault(require("mongoose"));
 // Add product to cart
-const addToCart = (userId, productId, quantity) => __awaiter(void 0, void 0, void 0, function* () {
+const addToCart = (userId, sellerId, productId, quantity) => __awaiter(void 0, void 0, void 0, function* () {
     if (!mongoose_1.default.Types.ObjectId.isValid(productId)) {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, "Invalid product ID");
     }
@@ -35,7 +35,8 @@ const addToCart = (userId, productId, quantity) => __awaiter(void 0, void 0, voi
             items: [
                 {
                     productId: product._id,
-                    image: product.images[0], // Make sure the image is being passed here
+                    sellerId,
+                    image: product.images[0],
                     name: product.name,
                     category: product.category,
                     brand: product.brand,
@@ -55,6 +56,7 @@ const addToCart = (userId, productId, quantity) => __awaiter(void 0, void 0, voi
         else {
             cart.items.push({
                 productId: product._id,
+                sellerId,
                 image: product.images[0],
                 name: product.name,
                 category: product.category,

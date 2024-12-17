@@ -29,9 +29,21 @@ const paymentConfirmationMessage = catchAsync(async (req, res) => {
   res.send(result);
 });
 
+const getPaymentsBySellerId = catchAsync(async (req, res) => {
+  const { sellerId } = req.params;
+  const result = await PaymentServices.getPaymentsBySellerId(sellerId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Payment histories retrieved successfully for the seller",
+    data: result,
+  });
+});
+
 
 export const PaymentControllers = {
   payment,
   paymentConfirmationMessage,
   getAllPaymentHistories,
+  getPaymentsBySellerId,
 };

@@ -27,6 +27,11 @@ router.post(
 
 router.get("/", ProductControllers.getAllProducts);
 router.get("/:productId", ProductControllers.getSingleProductById);
+router.get("/category/:categoryName", ProductControllers.getProductsByCategory);
+// router.get("/my-products/:sellerId", ProductControllers.getMyProducts);
+// Get all brands
+router.get("/brands", ProductControllers.getAllBrands);
+
 router.put(
   "/update-product/:productId",
   multerUpload.array('files', 10),

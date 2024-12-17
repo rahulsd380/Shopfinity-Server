@@ -14,12 +14,12 @@ const PaymentSchema = new Schema<TPayment>(
     phoneNumber: {
       type: String,
       required: true,
-      trim: true,
     },
     userId: {
       type: String,
       required: true,
     },
+    sellerIds: { type: [String], required: true },
     amount: {
       type: String,
       required: true,
@@ -51,6 +51,11 @@ const PaymentSchema = new Schema<TPayment>(
     altPhoneNumber: {
       type: String,
       required: true,
+    },
+    status: {
+      type: String,
+      default : "pending"
+
     },
   },
   {

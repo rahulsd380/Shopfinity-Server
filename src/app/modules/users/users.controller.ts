@@ -25,6 +25,21 @@ const getMe = catchAsync(async (req, res) => {
   });
 });
 
+const getMyOrders = catchAsync(async (req, res) => {
+  // const userId = req.user.userId;
+  const {userId} = req.params;
+  console.log(userId);
+  const result = await UserServices.getMyOrders(userId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Orders retrieved successfully',
+    data: result,
+  });
+});
+
+
+
 const changeUserRoleToAdmin = catchAsync(async (req, res) => {
   const { userId } = req.params;
   const result = await UserServices.changeUserRoleToAdmin(userId);
@@ -127,4 +142,5 @@ export const UserControllers = {
   getSingleUserById,
   followUser,
   unfollowUser,
+  getMyOrders,
 };

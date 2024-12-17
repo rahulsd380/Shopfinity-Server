@@ -62,7 +62,7 @@ const userSchema = new mongoose_1.Schema({
     orders: [
         {
             type: mongoose_1.Types.ObjectId,
-            ref: "Order",
+            ref: "Product",
         },
     ],
     wishlist: [
@@ -71,6 +71,7 @@ const userSchema = new mongoose_1.Schema({
             ref: "Product",
         },
     ],
+    followings: { type: [String], default: [] }
 }, {
     timestamps: true,
 });

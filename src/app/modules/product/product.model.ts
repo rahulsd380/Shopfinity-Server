@@ -45,6 +45,7 @@ const productSchema = new Schema<TProduct>(
                     type: Types.ObjectId,
                     ref: "User",
                 },
+                userName:{type : String},
                 reviewId: {
                     type: Types.ObjectId,
                     ref: "Review",

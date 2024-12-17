@@ -8,7 +8,7 @@ const cartItemSchema = new Schema(
     category: { type: String, required: true },
     brand: { type: String, required: true },
     stock: { type: String, required: true },
-    // seller: { type: String, required: true },
+    sellerId: { type: Schema.Types.ObjectId, ref: "Vendor", required: true },
     price: { type: Number, required: true },
     quantity: { type: Number, required: true },
   },
